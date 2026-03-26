@@ -130,5 +130,38 @@
     "youtube_music": "https://music.youtube.com/watch?v=an93ViDGwSk&si=e4Uefqx2-s7efroR",
     "youtube_video": "https://youtu.be/DSIIIBIxQoc?si=dCKfoTI_7psOGv8T",
     "lyrics": null
+  },
+  {
+    "id": 13,
+    "title": "SHINE",
+    "artist": "UPgirls",
+    "release_year": "2022",
+    "type": "Single",
+    "spotify": null,
+    "youtube_music": null,
+    "youtube_video": null,
+    "lyrics": null
+  },
+  {
+    "id": 14,
+    "title": "Surat Cinta",
+    "artist": "UPgirls",
+    "release_year": "2023",
+    "type": "Single",
+    "spotify": null,
+    "youtube_music": null,
+    "youtube_video": null,
+    "lyrics": null
+  },
+  {
+    "id": 15,
+    "title": "Sampai Jumpa",
+    "artist": "UPgirls",
+    "release_year": "2025",
+    "type": "Single",
+    "spotify": null,
+    "youtube_music": null,
+    "youtube_video": null,
+    "lyrics": null
   }
 ]

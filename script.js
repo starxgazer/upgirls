@@ -644,6 +644,23 @@ function loadMemberDetail(name) {
 
                 const statusTag = member.is_active ? '' : '<span class="status-badge former">Former Member</span>';
 
+                // Build profile metadata list from available fields
+                const isValid = v => v && v !== 'N/A' && v !== 'Unknown';
+                const metaRows = [];
+                if (isValid(member.full_name) && member.full_name.toLowerCase() !== member.name.toLowerCase()) metaRows.push(`<li><span class="label">Full Name</span><span class="value">${member.full_name}</span></li>`);
+                if (isValid(member.position)) metaRows.push(`<li><span class="label">Position</span><span class="value">${member.position}</span></li>`);
+                if (isValid(member.birth_date)) metaRows.push(`<li><span class="label">Birth Date</span><span class="value">${member.birth_date}</span></li>`);
+                if (isValid(member.birth_place)) metaRows.push(`<li><span class="label">Birth Place</span><span class="value">${member.birth_place}</span></li>`);
+                if (isValid(member.blood_type)) metaRows.push(`<li><span class="label">Blood Type</span><span class="value">${member.blood_type}</span></li>`);
+                if (isValid(member.mbti)) metaRows.push(`<li><span class="label">MBTI</span><span class="value">${member.mbti}</span></li>`);
+                if (isValid(member.zodiac)) metaRows.push(`<li><span class="label">Zodiac</span><span class="value">${member.zodiac}</span></li>`);
+                if (isValid(member.chinese_zodiac)) metaRows.push(`<li><span class="label">Chinese Zodiac</span><span class="value">${member.chinese_zodiac}</span></li>`);
+                if (isValid(member.nationality)) metaRows.push(`<li><span class="label">Nationality</span><span class="value">${member.nationality}</span></li>`);
+                if (isValid(member.representative_emoji)) metaRows.push(`<li><span class="label">Emoji</span><span class="value">${member.representative_emoji}</span></li>`);
+                const metaHTML = metaRows.length
+                    ? `<ul class="profile-meta">${metaRows.join('')}</ul>`
+                    : '';
+
                 detailContainer.innerHTML = `
                     <div class="member-detail-grid">
                         <div class="member-image-container">
@@ -652,9 +669,10 @@ function loadMemberDetail(name) {
                         <div class="member-info">
                             ${statusTag}
                             <h2>${member.name}</h2>
+                            ${metaHTML}
                             <div class="bio-section">
                                 <h3>Biography & Facts</h3>
-                                <p>${member.facts}</p>
+                                <p>${member.facts || '—'}</p>
                             </div>
                             <div class="social-section">
                                 <h3>Follow ${member.name}</h3>

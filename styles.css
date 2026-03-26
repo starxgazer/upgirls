@@ -1,5 +1,6 @@
 :root {
     --primary-color: #ffb7c5; /* Pinkish, girl group vibe */
+    --primary-pink: #ff69b4;
     --secondary-color: #bf7f7f;
     --dark-color: #333;
     --light-color: #fff;
@@ -91,7 +92,7 @@ header nav ul li a {
 
 #about {
     text-align: center;
-    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://kprofiles.com/wp-content/uploads/2022/02/upg.png');
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('images/UPgirls_All_Member.jpg');
     background-size: cover;
     background-position: center;
     color: var(--light-color);
@@ -137,6 +138,190 @@ h3 {
 
 .former-grid {
     opacity: 0.85;
+}
+
+/* Shows Section */
+.shows-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.shows-view-all {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.view-all-link {
+    display: inline-block;
+    padding: 0.8rem 2.5rem;
+    background-color: var(--primary-pink);
+    color: white !important;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+    border: none;
+    cursor: pointer;
+}
+
+.view-all-link:hover {
+    background-color: #e05688;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+    color: white !important;
+}
+
+.page-content {
+    padding-top: 120px;
+    padding-bottom: 4rem;
+    min-height: 70vh;
+}
+
+.back-link {
+    margin-bottom: 3rem;
+}
+
+.back-link a {
+    color: var(--primary-pink);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.back-link a:hover {
+    color: #ff1a4d;
+    text-decoration: underline;
+}
+
+.section-subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 3rem;
+}
+
+.show-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    display: flex;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #eee;
+}
+
+.show-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(255, 183, 197, 0.3);
+}
+
+.toggle-btn {
+    background-color: #ff69b4;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    margin: 20px auto;
+    display: block;
+}
+
+.toggle-btn:hover {
+    background-color: #e05688;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+}
+
+.member-toggle-container {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.show-date-badge {
+    background: var(--primary-color);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    min-width: 80px;
+    text-align: center;
+}
+
+.show-date-badge .day {
+    font-size: 1.8rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.show-date-badge .month {
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.show-date-badge .year {
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+.show-info {
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+}
+
+.show-name {
+    margin: 0 0 0.3rem 0;
+    font-size: 1.2rem;
+    color: var(--accent-color);
+}
+
+.show-type {
+    margin: 0 0 0.3rem 0;
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.show-meta {
+    margin: 0 0 1rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.show-time, .show-location {
+    font-size: 0.85rem;
+    color: #888;
+    display: flex;
+    align-items: center;
+}
+
+.ticket-link {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: var(--secondary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    align-self: flex-start;
+    transition: background-color 0.2s;
+}
+
+.ticket-link:hover {
+    background-color: var(--accent-color);
 }
 
 .card {
@@ -273,65 +458,92 @@ h3 {
 .controls {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: stretch;
     gap: 1.5rem;
+    margin-top: 2rem;
     margin-bottom: 3rem;
-    background: var(--gray-color);
-    padding: 1.5rem;
-    border-radius: 15px;
+    background: #fdfdfd;
+    padding: 2rem;
+    border-radius: 20px;
     flex-wrap: wrap;
     box-sizing: border-box;
     width: 100%;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    border: 1px solid #f0f0f0;
 }
 
 .discography-controls {
-    margin-top: 2rem;
+    margin-top: 0;
 }
 
 .search-box {
-    flex: 1;
-    min-width: 200px;
+    position: relative;
+    flex: 0 0 250px;
+}
+
+.search-box::before {
+    content: "🔍";
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 0.9rem;
+    pointer-events: none;
 }
 
 .search-box input {
     width: 100%;
-    padding: 0.8rem 1.2rem;
-    border: 2px solid #ddd;
+    padding: 0.8rem 1.2rem 0.8rem 2.8rem;
+    border: 2px solid #eee;
     border-radius: 30px;
     font-size: 1rem;
     font-family: inherit;
-    transition: border-color 0.3s;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
 }
 
 .search-box input:focus {
     outline: none;
     border-color: var(--primary-color);
+    box-shadow: 0 2px 10px rgba(255, 183, 197, 0.3);
+    background-color: #fff;
 }
 
 .filter-sort-box {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
-    flex: 2;
+    flex: 1;
     min-width: 300px;
 }
 
 .filter-sort-box select {
-    padding: 0.8rem 1.2rem;
-    border: 2px solid #ddd;
+    padding: 0.8rem 2.5rem 0.8rem 1.2rem;
+    border: 2px solid #eee;
     border-radius: 30px;
     background-color: #fff;
     font-size: 0.9rem;
     font-family: inherit;
     cursor: pointer;
-    transition: border-color 0.3s;
+    transition: all 0.3s ease;
     flex: 1;
-    min-width: 150px;
+    min-width: 140px;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23999' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1.2rem center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+}
+
+.filter-sort-box select:hover {
+    border-color: var(--primary-color);
 }
 
 .filter-sort-box select:focus {
     outline: none;
     border-color: var(--primary-color);
+    box-shadow: 0 2px 10px rgba(255, 183, 197, 0.3);
 }
 
 .no-results {
@@ -346,12 +558,20 @@ h3 {
     margin-top: 3rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 992px) {
     .controls {
         flex-direction: column;
-        align-items: stretch;
-        gap: 1rem;
+        padding: 1.5rem;
     }
+    .search-box, .filter-sort-box {
+        width: 100%;
+        max-width: none;
+        flex: none;
+        min-width: 0;
+    }
+}
+
+@media (max-width: 576px) {
     .filter-sort-box {
         flex-direction: column;
     }
@@ -443,6 +663,17 @@ footer a {
     font-size: 3rem;
     margin-bottom: 0.5rem;
     color: var(--dark-color);
+}
+
+.member-link {
+    color: var(--primary-pink);
+    text-decoration: none;
+    transition: opacity 0.3s;
+}
+
+.member-link:hover {
+    opacity: 0.7;
+    text-decoration: underline;
 }
 
 .artist-name {
@@ -768,4 +999,33 @@ footer a {
         margin: 2rem 1rem;
         padding: 1.5rem;
     }
+}
+
+.shows-toggle-container {
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 2rem;
+    transition: transform 0.2s;
+}
+
+.back-link:hover {
+    transform: translateX(-5px);
+}
+
+.past-event {
+    opacity: 0.8;
+}
+
+.past-event:hover {
+    opacity: 1;
+}
+
+.ticket-link.unavailable {
+    background-color: #666;
+    cursor: not-allowed;
+    pointer-events: none;
 }

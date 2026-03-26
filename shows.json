@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "date": "2026-03-29",
+    "name": "The Minishow UPgirls",
+    "type": "HOT SEAT (150K)",
+    "ticket_link": "https://forms.gle/DRBVCX8ia3sGYYNw7",
+    "time": "15:00 WIB",
+    "location": "Ice Palace, 4F, Lotte Mall, Kuningan"
+  },
+  {
+    "id": 2,
+    "date": "2026-03-29",
+    "name": "The Minishow UPgirls",
+    "type": "REGULAR (100K)",
+    "ticket_link": "https://forms.gle/cuPZPAMxjXPq2kA1A",
+    "time": "15:00 WIB",
+    "location": "Ice Palace, 4F, Lotte Mall, Kuningan"
+  },
+  {
+    "id": 3,
+    "date": "2025-09-14",
+    "name": "THE BEGINNING",
+    "type": "HOT SEAT (150K)",
+    "ticket_link": "https://forms.gle/kaghLm2LN1Zu6bo98",
+    "time": "17.00 WIB",
+    "location": "Ice Palace 4F, Lotte Mall"
+  },
+  {
+    "id": 4,
+    "date": "2025-09-14",
+    "name": "THE BEGINNING",
+    "type": "REGULER (100K)",
+    "ticket_link": "https://forms.gle/DhaQzudbDLXdDYyR8",
+    "time": "17.00 WIB",
+    "location": "Ice Palace 4F, Lotte Mall"
+  },
+  {
+    "id": 5,
+    "date": "2025-08-31",
+    "name": "The Minishow UPgirls",
+    "type": "HOT SEAT (150K)",
+    "ticket_link": "https://forms.gle/wwetDsj3NRYaguqf7",
+    "time": "17.00 WIB",
+    "location": "Ice Palace 4F, Lotte Mall Kuningan"
+  },
+  {
+    "id": 6,
+    "date": "2025-08-31",
+    "name": "The Minishow UPgirls",
+    "type": "Regular Seat (100K)",
+    "ticket_link": "https://forms.gle/4cNwP3FbkTMZk2FNA",
+    "time": "17.00 WIB",
+    "location": "Ice Palace 4F, Lotte Mall Kuningan"
+  }
+]

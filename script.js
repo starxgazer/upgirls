@@ -12,9 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const artistFilter = document.getElementById('artist-filter');
     const songSortOrder = document.getElementById('song-sort-order');
     const noSongsResults = document.getElementById('no-songs-results');
+    const showsList = document.getElementById('shows-list');
+    const toggleFormerMembersBtn = document.getElementById('toggle-former-members');
 
     let allMembers = [];
     let allSongs = [];
+    let allShows = [];
 
     // Handle header scroll effect
     const header = document.querySelector('header');
@@ -28,17 +31,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    if (activeGrid && formerGrid) {
+    if (activeGrid) {
         fetch('members.json')
             .then(response => response.json())
             .then(data => {
                 allMembers = data;
-                renderMembers();
                 
-                // Add event listeners for controls
-                searchInput.addEventListener('input', renderMembers);
-                statusFilter.addEventListener('change', renderMembers);
-                sortOrder.addEventListener('change', renderMembers);
+                const isAllMembersPage = document.body.classList.contains('subpage') && 
+                                        document.querySelector('#members-archive');
+                
+                if (isAllMembersPage) {
+                    renderMembers();
+                    // Add event listeners for controls
+                    if (searchInput) searchInput.addEventListener('input', renderMembers);
+                    if (statusFilter) statusFilter.addEventListener('change', renderMembers);
+                    if (sortOrder) sortOrder.addEventListener('change', renderMembers);
+                } else {
+                    // On home page, only show active members, no controls
+                    const activeOnly = allMembers.filter(m => m.is_active);
+                    activeGrid.innerHTML = '';
+                    activeOnly.forEach(member => {
+                        activeGrid.appendChild(createMemberCard(member));
+                    });
+                }
             })
             .catch(error => console.error('Error loading members:', error));
     }
@@ -65,6 +80,92 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             })
             .catch(error => console.error('Error loading discography:', error));
+    }
+
+    if (showsList) {
+        fetch('shows.json')
+            .then(response => response.json())
+            .then(data => {
+                allShows = data;
+                
+                // If on index.html, only show upcoming
+                // If on all-events.html, show all
+                const isAllEventsPage = document.body.classList.contains('subpage') && 
+                                        document.querySelector('#all-events-section');
+                
+                if (isAllEventsPage) {
+                    renderShows(allShows, true);
+                } else {
+                    const now = new Date('2026-03-26');
+                    const upcomingShows = allShows.filter(show => new Date(show.date) >= now);
+                    renderShows(upcomingShows, false);
+                }
+            })
+            .catch(error => console.error('Error loading shows:', error));
+    }
+
+    if (toggleFormerMembersBtn) {
+        toggleFormerMembersBtn.addEventListener('click', () => {
+            const isHidden = formerSection.style.display === 'none';
+            formerSection.style.display = isHidden ? 'block' : 'none';
+            toggleFormerMembersBtn.textContent = isHidden ? 'Hide Former Members' : 'View Former Members';
+            if (isHidden) {
+                formerSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    }
+
+    function renderShows(shows, showPast = true) {
+        if (!showsList) return;
+        showsList.innerHTML = '';
+
+        // Current date: 2026-03-26
+        const now = new Date('2026-03-26');
+        
+        // Sort shows by date (descending, newest first)
+        const sortedShows = [...shows].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        if (sortedShows.length === 0) {
+            showsList.innerHTML = '<p class="no-results">No upcoming shows scheduled at the moment. Check back soon!</p>';
+            return;
+        }
+
+        sortedShows.forEach(show => {
+            const showDate = new Date(show.date);
+            const isPast = showDate < now;
+            
+            if (!showPast && isPast) return;
+            
+            const day = showDate.getDate();
+            const month = showDate.toLocaleString('en-US', { month: 'short' });
+            const year = showDate.getFullYear();
+
+            const showCard = document.createElement('div');
+            showCard.className = `show-card ${isPast ? 'past-event' : ''}`;
+            
+            showCard.innerHTML = `
+                <div class="show-date-badge">
+                    <span class="day">${day}</span>
+                    <span class="month">${month}</span>
+                    <span class="year">${year}</span>
+                    ${isPast ? '<span class="status-badge">Finished</span>' : ''}
+                </div>
+                <div class="show-info">
+                    <h4 class="show-name">${show.name}</h4>
+                    <p class="show-type">${show.type}</p>
+                    <div class="show-meta">
+                        ${show.time ? `<span class="show-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>${show.time}</span>` : ''}
+                        ${show.location ? `<span class="show-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:middle;margin-left:8px;margin-right:4px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>${show.location}</span>` : ''}
+                    </div>
+                    ${isPast ? 
+                        '<span class="ticket-link disabled">Event Finished</span>' : 
+                        `<a href="${show.ticket_link}" class="ticket-link" ${show.ticket_link === '#' || !show.ticket_link ? 'style="opacity: 0.5; pointer-events: none;"' : ''} target="_blank" rel="noopener">${show.ticket_link === '#' || !show.ticket_link ? 'Ticket Link Unavailable' : 'Buy Tickets'}</a>`
+                    }
+                </div>
+            `;
+
+            showsList.appendChild(showCard);
+        });
     }
 
     function filterSongs() {
@@ -154,9 +255,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderMembers() {
-        const searchTerm = searchInput.value.toLowerCase();
-        const statusValue = statusFilter.value;
-        const sortValue = sortOrder.value;
+        const searchTerm = (searchInput && searchInput.value) ? searchInput.value.toLowerCase() : '';
+        const statusValue = statusFilter ? statusFilter.value : (document.querySelector('#members-archive') ? 'all' : 'active');
+        const sortValue = sortOrder ? sortOrder.value : 'asc';
 
         // Filter members
         let filtered = allMembers.filter(member => {
@@ -179,26 +280,49 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Clear grids
-        activeGrid.innerHTML = '';
-        formerGrid.innerHTML = '';
+        if (activeGrid) activeGrid.innerHTML = '';
+        if (formerGrid) formerGrid.innerHTML = '';
 
         const activeMembers = filtered.filter(m => m.is_active);
         const formerMembers = filtered.filter(m => !m.is_active);
 
         // Update visibility of sections
-        activeSection.style.display = activeMembers.length > 0 ? 'block' : 'none';
-        formerSection.style.display = formerMembers.length > 0 ? 'block' : 'none';
-        noResults.style.display = filtered.length === 0 ? 'block' : 'none';
+        if (activeSection) activeSection.style.display = activeMembers.length > 0 ? 'block' : 'none';
+        
+        // Handle Former Members Section visibility based on filter and toggle
+        const isFormerFiltered = statusValue === 'all' || statusValue === 'former';
+        const isToggleOn = toggleFormerMembersBtn && toggleFormerMembersBtn.textContent.includes('Hide');
+        
+        if (formerSection) {
+            if (isFormerFiltered && (statusValue === 'former' || isToggleOn || document.querySelector('#members-archive'))) {
+                formerSection.style.display = formerMembers.length > 0 ? 'block' : 'none';
+            } else {
+                formerSection.style.display = 'none';
+            }
+        }
+
+        // Show/Hide the toggle button container
+        const shouldShowFormerToggle = formerMembers.length > 0 && statusValue === 'active' && !document.querySelector('#members-archive');
+        const toggleContainer = document.querySelector('.member-toggle-container');
+        if (toggleContainer) {
+            toggleContainer.style.display = shouldShowFormerToggle ? 'block' : 'none';
+        }
+        
+        if (noResults) noResults.style.display = filtered.length === 0 ? 'block' : 'none';
 
         // Render active members
-        activeMembers.forEach(member => {
-            activeGrid.appendChild(createMemberCard(member));
-        });
+        if (activeGrid) {
+            activeMembers.forEach(member => {
+                activeGrid.appendChild(createMemberCard(member));
+            });
+        }
 
         // Render former members
-        formerMembers.forEach(member => {
-            formerGrid.appendChild(createMemberCard(member));
-        });
+        if (formerGrid) {
+            formerMembers.forEach(member => {
+                formerGrid.appendChild(createMemberCard(member));
+            });
+        }
     }
 
     function createMemberCard(member) {
@@ -229,7 +353,33 @@ function loadSongDetail(id) {
             const song = songs.find(s => s.id == id);
             if (song) {
                 document.getElementById('song-title').textContent = song.title;
-                document.getElementById('song-artist').textContent = song.artist;
+                
+                // Make artist/featuring members clickable
+                const songArtist = document.getElementById('song-artist');
+                if (songArtist) {
+                    const artists = song.artist.split(',').map(a => a.trim());
+                    songArtist.innerHTML = '';
+                    artists.forEach((artist, index) => {
+                        const isUPgirls = artist.toLowerCase() === 'upgirls';
+                        const cleanName = artist.replace(/\s+UPgirls$/i, '').trim();
+                        
+                        if (isUPgirls) {
+                            const span = document.createElement('span');
+                            span.textContent = artist;
+                            songArtist.appendChild(span);
+                        } else {
+                            const link = document.createElement('a');
+                            link.href = `member.html?name=${encodeURIComponent(cleanName)}`;
+                            link.textContent = artist;
+                            link.className = 'member-link';
+                            songArtist.appendChild(link);
+                        }
+                        
+                        if (index < artists.length - 1) {
+                            songArtist.appendChild(document.createTextNode(', '));
+                        }
+                    });
+                }
                 
                 const songType = document.getElementById('song-type');
                 const songYear = document.getElementById('song-year');
@@ -387,21 +537,28 @@ function loadMemberDetail(name) {
                     </div>
                 `;
 
-                // Fetch and render discography for this member
-                fetch('discography.json')
-                    .then(response => response.json())
-                    .then(songs => {
-                        const memberSongs = songs.filter(song => 
-                            song.artist.toLowerCase().includes(member.name.toLowerCase()) || 
-                            song.artist.toLowerCase().includes('upgirls')
-                        );
-                        renderMemberDiscography(memberSongs);
-                    })
-                    .catch(error => {
-                        console.error('Error loading member discography:', error);
-                        const songList = document.getElementById('member-song-list');
-                        if (songList) songList.innerHTML = '<p>Error loading songs.</p>';
-                    });
+                // Fetch and render discography for this member (only for Nat and Nay)
+                const membersWithDiscography = ['Nat', 'Nay'];
+                const discographySection = document.getElementById('member-discography');
+                
+                if (membersWithDiscography.includes(member.name)) {
+                    if (discographySection) discographySection.style.display = 'block';
+                    fetch('discography.json')
+                        .then(response => response.json())
+                        .then(songs => {
+                            const memberSongs = songs.filter(song => 
+                                song.artist.toLowerCase().includes(member.name.toLowerCase())
+                            );
+                            renderMemberDiscography(memberSongs);
+                        })
+                        .catch(error => {
+                            console.error('Error loading member discography:', error);
+                            const songList = document.getElementById('member-song-list');
+                            if (songList) songList.innerHTML = '<p>Error loading songs.</p>';
+                        });
+                } else {
+                    if (discographySection) discographySection.style.display = 'none';
+                }
             } else {
                 detailContainer.innerHTML = `<p>Member not found. <a href="index.html">Back to home</a></p>`;
             }

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Members - UPgirls Fan Site</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+</head>
+<body class="subpage">
+    <header class="scrolled">
+        <div class="container">
+            <h1 class="logo-container"><a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center;"><img src="images/UPgirls_Logo.jpg" alt="UPgirls Logo" class="header-logo"></a></h1>
+            <p class="tagline">Fan Site</p>
+            <nav>
+                <ul>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#shows">Mini Shows</a></li>
+                    <li><a href="index.html#members">Members</a></li>
+                    <li><a href="index.html#discography">Discography</a></li>
+                    <li><a href="index.html#social">Social</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container page-content">
+        <div class="back-link">
+            <a href="index.html#members">&larr; Back to Members</a>
+        </div>
+
+        <section id="members-archive">
+            <h2 class="section-title">All Members</h2>
+            <p class="section-subtitle">Meet all current and former members of UPgirls.</p>
+
+            <div class="controls">
+                <div class="search-box">
+                    <input type="text" id="member-search" placeholder="Search members by name...">
+                </div>
+                <div class="filter-sort-box">
+                    <select id="status-filter">
+                        <option value="all" selected>All Members</option>
+                        <option value="active">Active Only</option>
+                        <option value="former">Former Only</option>
+                    </select>
+                    <select id="sort-order">
+                        <option value="asc">Name (A-Z)</option>
+                        <option value="desc">Name (Z-A)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="active-members-section">
+                <h3 class="section-title">Active Members</h3>
+                <div id="active-members-grid" class="grid">
+                    <!-- Active members will be loaded here via JS -->
+                </div>
+            </div>
+
+            <div id="former-members-section" style="display: none; margin-top: 4rem;">
+                <h3 class="section-title former-title">Former Members</h3>
+                <div id="former-members-grid" class="grid former-grid">
+                    <!-- Former members will be loaded here via JS -->
+                </div>
+            </div>
+
+            <div id="no-results" class="no-results" style="display: none;">
+                <p>No members found matching your search criteria.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 UPgirls Fan Site. All rights reserved.</p>
+            <p class="trademark-notice">UPgirls and all related names, logos, and materials are trademarks and copyrights of Up Management or their respective owners. This site is a fan-made project for informational purposes only.</p>
+            <p>Data sourced from <a href="https://kprofiles.com/upgirls-members-profile/" target="_blank">KProfiles</a> and <a href="https://www.idntimes.com/hype/entertainment/profil-member-upgirls-q9t02-00-6sxgf-fmvt4h" target="_blank">IDN Times</a>.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

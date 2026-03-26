@@ -17,6 +17,7 @@
             <nav>
                 <ul>
                     <li><a href="#about">About</a></li>
+                    <li><a href="#shows">Mini Shows</a></li>
                     <li><a href="#members">Members</a></li>
                     <li><a href="#discography">Discography</a></li>
                     <li><a href="#social">Social</a></li>
@@ -34,40 +35,27 @@
             </div>
         </section>
 
-        <section id="members" class="container">
-            <div class="controls">
-                <div class="search-box">
-                    <input type="text" id="member-search" placeholder="Search members by name...">
-                </div>
-                <div class="filter-sort-box">
-                    <select id="status-filter">
-                        <option value="all">All Members</option>
-                        <option value="active">Active Only</option>
-                        <option value="former">Former Only</option>
-                    </select>
-                    <select id="sort-order">
-                        <option value="asc">Name (A-Z)</option>
-                        <option value="desc">Name (Z-A)</option>
-                    </select>
-                </div>
+        <section id="shows" class="container">
+            <h3>Mini Shows</h3>
+            <div id="shows-list" class="shows-grid">
+                <!-- Shows will be loaded here via JS -->
             </div>
+            <div class="shows-view-all">
+                <a href="all-events.html" class="view-all-link">View All Events</a>
+            </div>
+        </section>
 
+        <section id="members" class="container">
             <div id="active-members-section">
                 <h3>Active Members</h3>
+                
                 <div id="active-members-grid" class="grid">
                     <!-- Active members will be loaded here via JS -->
                 </div>
-            </div>
-            
-            <div id="former-members-section">
-                <h3 class="section-title former-title">Former Members</h3>
-                <div id="former-members-grid" class="grid former-grid">
-                    <!-- Former members will be loaded here via JS -->
+                
+                <div class="shows-view-all">
+                    <a href="all-members.html" class="view-all-link">View All Members</a>
                 </div>
-            </div>
-            
-            <div id="no-results" class="no-results" style="display: none;">
-                <p>No members found matching your criteria.</p>
             </div>
         </section>
 

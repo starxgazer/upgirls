@@ -95,6 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (isAllEventsPage) {
                     renderShows(allShows, true);
+                    initCalendar();
                 } else {
                     const now = new Date('2026-03-26');
                     const upcomingShows = allShows.filter(show => new Date(show.date) >= now);
@@ -102,6 +103,137 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             })
             .catch(error => console.error('Error loading shows:', error));
+    }
+
+    function initCalendar() {
+        const calendarContainer = document.getElementById('multi-calendar-view');
+        const monthYearDisplay = document.getElementById('current-month-year');
+        const prevMonthBtn = document.getElementById('prev-month');
+        const nextMonthBtn = document.getElementById('next-month');
+
+        if (!calendarContainer || !monthYearDisplay) return;
+
+        let currentDate = new Date('2026-03-26'); // System date
+        let middleDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+
+        function createMonthGrid(date) {
+            const grid = document.createElement('div');
+            grid.className = 'calendar-grid';
+
+            const header = document.createElement('div');
+            header.className = 'month-grid-header';
+            header.textContent = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(date);
+            grid.appendChild(header);
+
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayNames.forEach(name => {
+                const dayNameDiv = document.createElement('div');
+                dayNameDiv.className = 'day-name';
+                dayNameDiv.textContent = name;
+                grid.appendChild(dayNameDiv);
+            });
+
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            const firstDayOfMonth = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+            // Fill in days from previous month
+            for (let i = firstDayOfMonth - 1; i >= 0; i--) {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'calendar-day other-month';
+                dayDiv.textContent = daysInPrevMonth - i;
+                grid.appendChild(dayDiv);
+            }
+
+            // Fill in days of current month
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'calendar-day';
+                dayDiv.textContent = i;
+
+                const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                const dayEvents = allShows.filter(show => show.date === dateString);
+
+                if (dayEvents.length > 0) {
+                    const isPast = new Date(dateString) < currentDate;
+                    dayDiv.classList.add('has-event');
+                    if (isPast) dayDiv.classList.add('past-event');
+                    
+                    const dot = document.createElement('div');
+                    dot.className = 'event-dot';
+                    dayDiv.appendChild(dot);
+
+                    dayDiv.title = dayEvents.map(e => e.name).join(', ');
+                    dayDiv.addEventListener('click', () => {
+                        const showCards = document.querySelectorAll('.show-card');
+                        showCards.forEach(card => {
+                            const cardDate = card.querySelector('.show-date-badge');
+                            if (cardDate && cardDate.textContent.includes(String(i)) && 
+                                cardDate.textContent.includes(new Intl.DateTimeFormat('en-US', { month: 'short' }).format(date))) {
+                                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                card.style.boxShadow = '0 0 15px var(--primary-pink)';
+                                setTimeout(() => {
+                                    card.style.boxShadow = '';
+                                }, 2000);
+                            }
+                        });
+                    });
+                }
+
+                if (year === currentDate.getFullYear() && month === currentDate.getMonth() && i === currentDate.getDate()) {
+                    dayDiv.classList.add('today');
+                }
+
+                grid.appendChild(dayDiv);
+            }
+
+            // Fill in days from next month
+            const totalCells = 42;
+            const filledCells = firstDayOfMonth + daysInMonth;
+            for (let i = 1; i <= totalCells - filledCells; i++) {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'calendar-day other-month';
+                dayDiv.textContent = i;
+                grid.appendChild(dayDiv);
+            }
+
+            return grid;
+        }
+
+        function renderCalendars() {
+            calendarContainer.innerHTML = '';
+            
+            // Generate 3 months: prev, current (middle), next
+            const months = [
+                new Date(middleDate.getFullYear(), middleDate.getMonth() - 1, 1),
+                new Date(middleDate.getFullYear(), middleDate.getMonth(), 1),
+                new Date(middleDate.getFullYear(), middleDate.getMonth() + 1, 1)
+            ];
+
+            months.forEach((date, index) => {
+                const grid = createMonthGrid(date);
+                if (index === 0) grid.classList.add('prev-month-grid');
+                if (index === 1) grid.classList.add('current-month-grid');
+                if (index === 2) grid.classList.add('next-month-grid');
+                calendarContainer.appendChild(grid);
+            });
+
+            monthYearDisplay.textContent = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(middleDate);
+        }
+
+        prevMonthBtn.addEventListener('click', () => {
+            middleDate.setMonth(middleDate.getMonth() - 1);
+            renderCalendars();
+        });
+
+        nextMonthBtn.addEventListener('click', () => {
+            middleDate.setMonth(middleDate.getMonth() + 1);
+            renderCalendars();
+        });
+
+        renderCalendars();
     }
 
     if (toggleFormerMembersBtn) {
@@ -504,7 +636,10 @@ function loadMemberDetail(name) {
                     socials += `<a href="https://x.com/${member.x}" target="_blank" class="social-btn x-com">X (Twitter)</a> `;
                 }
                 if (member.tiktok) {
-                    socials += `<a href="https://tiktok.com/@${member.tiktok}" target="_blank" class="social-btn tiktok">TikTok</a>`;
+                    socials += `<a href="https://tiktok.com/@${member.tiktok}" target="_blank" class="social-btn tiktok">TikTok</a> `;
+                }
+                if (member.idn_live) {
+                    socials += `<a href="https://www.idn.app/${member.idn_live}" target="_blank" class="social-btn idn">IDN Live</a>`;
                 }
 
                 const statusTag = member.is_active ? '' : '<span class="status-badge former">Former Member</span>';

@@ -13,7 +13,6 @@
     <header class="scrolled">
         <div class="container">
             <h1 class="logo-container"><a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center;"><img src="images/UPgirls_Logo.jpg" alt="UPgirls Logo" class="header-logo"></a></h1>
-            <p class="tagline">Fan Site</p>
             <nav>
                 <ul>
                     <li><a href="index.html#about">About</a></li>
@@ -32,7 +31,21 @@
         </div>
 
         <section id="all-events-section">
-            <h2 class="section-title">All Events</h2>
+            <h2 class="section-title">Event Calendar</h2>
+            <p class="section-subtitle">Check our schedule for upcoming and past events.</p>
+            
+            <div id="calendar-container" class="calendar-wrapper">
+                <div class="calendar-header">
+                    <button id="prev-month">&larr;</button>
+                    <h3 id="current-month-year">Month Year</h3>
+                    <button id="next-month">&rarr;</button>
+                </div>
+                <div id="multi-calendar-view" class="multi-calendar-view">
+                    <!-- Calendars will be loaded here via JS -->
+                </div>
+            </div>
+
+            <h2 class="section-title" style="margin-top: 4rem;">All Events List</h2>
             <p class="section-subtitle">A complete history of UPgirls performances and upcoming shows.</p>
             
             <div id="shows-list" class="shows-grid">
@@ -44,7 +57,8 @@
     <footer>
         <div class="container">
             <p>&copy; 2026 UPgirls Fan Site. All rights reserved.</p>
-            <p class="trademark-notice">UPgirls and all related names, logos, and materials are trademarks and copyrights of Up Management or their respective owners. This site is a fan-made project for informational purposes only.</p>
+            <p class="fan-made-notice">This is a fan-made website. We are not affiliated with, authorized, maintained, sponsored, or endorsed by Up Management or UPgirls.</p>
+            <p class="trademark-notice">UPgirls and all related names, logos, and materials are trademarks and copyrights of Up Management or their respective owners.</p>
             <p>Data sourced from <a href="https://kprofiles.com/upgirls-members-profile/" target="_blank">KProfiles</a> and <a href="https://www.idntimes.com/hype/entertainment/profil-member-upgirls-q9t02-00-6sxgf-fmvt4h" target="_blank">IDN Times</a>.</p>
         </div>
     </footer>

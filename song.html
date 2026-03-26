@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song Detail - Fan Site</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 class="logo-container"><a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center;"><img src="images/UPgirls_Logo.jpg" alt="UPgirls Logo" class="header-logo"></a></h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#members">Members</a></li>
+                    <li><a href="index.html#discography">Discography</a></li>
+                    <li><a href="index.html#social">Social</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="song-detail" class="container">
+        <div class="back-link">
+            <a href="index.html#discography">&larr; Back to Discography</a>
+        </div>
+        <section class="song-header">
+            <div class="song-meta">
+                <span id="song-type" class="badge">Single</span>
+                <span id="song-year">2022</span>
+            </div>
+            <h1 id="song-title">Song Title</h1>
+            <p id="song-artist" class="artist-name">Artist Name</p>
+        </section>
+
+        <section class="song-links">
+            <h2>Listen On</h2>
+            <div id="streaming-links" class="streaming-container">
+                <!-- Links will be injected here -->
+            </div>
+        </section>
+
+        <section class="song-lyrics">
+            <h2>Lyrics</h2>
+            <div class="lyrics-wrapper">
+                <pre id="lyrics-content">Lyrics content will appear here...</pre>
+                <p id="lyrics-placeholder" class="placeholder-text" style="display: none;">Lyrics are not available yet for this song.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 UPgirls Fan Site. All rights reserved.</p>
+            <p class="trademark-notice">"UPgirls" and all related materials are trademarks and copyrights of Up Management or their respective owners.</p>
+            <p>Data source: <a href="https://www.idntimes.com/" target="_blank">IDN Times</a>, <a href="https://kprofiles.com/" target="_blank">KProfiles</a>.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const songId = params.get('id');
+            if (songId) {
+                loadSongDetail(songId);
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>

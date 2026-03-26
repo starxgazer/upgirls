@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Profile - Fan Site</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+</head>
+<body class="member-page">
+    <header>
+        <div class="container">
+            <h1 class="logo-container"><a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center;"><img src="images/UPgirls_Logo.jpg" alt="UPgirls Logo" class="header-logo"></a></h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html#members">Back to Members</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="member-detail" class="member-detail">
+            <!-- Loading state or member details will be injected here -->
+            <p>Loading member profile...</p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 UPgirls Fan Project. Data sourced from <a href="https://kprofiles.com/upgirls-members-profile/" target="_blank">KProfiles</a> and <a href="https://www.idntimes.com/hype/entertainment/profil-member-upgirls-q9t02-00-6sxgf-fmvt4h" target="_blank">IDN Times</a>.</p>
+            <p class="trademark-notice">UPgirls and all related names, logos, and materials are trademarks and copyrights of Up Management or their respective owners. This site is a fan-made project for informational purposes only.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Specific logic for member page
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const memberName = params.get('name');
+            if (memberName) {
+                loadMemberDetail(memberName);
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>

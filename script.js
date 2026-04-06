@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const activeGrid = document.getElementById('active-members-grid');
+    const traineeGrid = document.getElementById('trainee-members-grid');
     const formerGrid = document.getElementById('former-members-grid');
     const searchInput = document.getElementById('member-search');
     const statusFilter = document.getElementById('status-filter');
@@ -14,6 +15,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const noSongsResults = document.getElementById('no-songs-results');
     const showsList = document.getElementById('shows-list');
     const toggleFormerMembersBtn = document.getElementById('toggle-former-members');
+    const currentYearSpan = document.getElementById('current-year');
+
+    // Update current year in footer
+    if (currentYearSpan) {
+        currentYearSpan.textContent = new Date().getFullYear();
+    }
 
     let allMembers = [];
     let allSongs = [];
@@ -47,12 +54,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (statusFilter) statusFilter.addEventListener('change', renderMembers);
                     if (sortOrder) sortOrder.addEventListener('change', renderMembers);
                 } else {
-                    // On home page, only show active members, no controls
-                    const activeOnly = allMembers.filter(m => m.is_active);
-                    activeGrid.innerHTML = '';
-                    activeOnly.forEach(member => {
-                        activeGrid.appendChild(createMemberCard(member));
-                    });
+                    // On home page, separate active (regular) and trainee members
+                    const activeOnly = allMembers.filter(m => m.is_active && !m.position.includes('Trainee'));
+                    const traineeOnly = allMembers.filter(m => m.is_active && m.position.includes('Trainee'));
+                    
+                    if (activeGrid) {
+                        activeGrid.innerHTML = '';
+                        activeOnly.forEach(member => {
+                            activeGrid.appendChild(createMemberCard(member));
+                        });
+                    }
+                    
+                    if (traineeGrid) {
+                        traineeGrid.innerHTML = '';
+                        traineeOnly.forEach(member => {
+                            traineeGrid.appendChild(createMemberCard(member));
+                        });
+                        
+                        // Hide section if no trainees
+                        const traineeSection = document.getElementById('trainee-members-section');
+                        if (traineeSection) {
+                            traineeSection.style.display = traineeOnly.length > 0 ? 'block' : 'none';
+                        }
+                    }
                 }
             })
             .catch(error => console.error('Error loading members:', error));
@@ -97,8 +121,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     renderShows(allShows, true);
                     initCalendar();
                 } else {
-                    const now = new Date('2026-03-26');
-                    const upcomingShows = allShows.filter(show => new Date(show.date) >= now);
+                    const now = new Date();
+                    const upcomingShows = allShows.filter(show => {
+                        // Create show date object. If time is provided, use the end time if possible, 
+                        // or just the end of day for safety.
+                        const showDate = new Date(show.date + 'T23:59:59');
+                        return showDate >= now;
+                    });
                     renderShows(upcomingShows, false);
                 }
             })
@@ -113,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!calendarContainer || !monthYearDisplay) return;
 
-        let currentDate = new Date('2026-03-26'); // System date
+        let currentDate = new Date(); // Dynamic current date
         let middleDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 
         function createMonthGrid(date) {
@@ -156,10 +185,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
                 const dayEvents = allShows.filter(show => show.date === dateString);
 
-                if (dayEvents.length > 0) {
-                    const isPast = new Date(dateString) < currentDate;
-                    dayDiv.classList.add('has-event');
-                    if (isPast) dayDiv.classList.add('past-event');
+            if (dayEvents.length > 0) {
+                // If the event is today, it's not past yet regardless of time for calendar view purposes
+                const eventDate = new Date(dateString + 'T00:00:00');
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                const isPast = eventDate < today;
+                dayDiv.classList.add('has-event');
+                if (isPast) dayDiv.classList.add('past-event');
                     
                     const dot = document.createElement('div');
                     dot.className = 'event-dot';
@@ -251,8 +285,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!showsList) return;
         showsList.innerHTML = '';
 
-        // Current date: 2026-03-26
-        const now = new Date('2026-03-26');
+        // Current date
+        const now = new Date();
         
         // Sort shows by date (descending, newest first)
         const sortedShows = [...shows].sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -263,14 +297,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         sortedShows.forEach(show => {
-            const showDate = new Date(show.date);
-            const isPast = showDate < now;
+            // Determine if event is past
+            let isPast = false;
+            const showDateOnly = new Date(show.date + 'T00:00:00');
+            const todayOnly = new Date();
+            todayOnly.setHours(0, 0, 0, 0);
+
+            if (showDateOnly < todayOnly) {
+                isPast = true;
+            } else if (showDateOnly.getTime() === todayOnly.getTime()) {
+                // It's today. Check the time if available.
+                // Time format example: "19.00–20.00 WIB"
+                if (show.time && show.time.includes('–')) {
+                    const endTimeStr = show.time.split('–')[1].split(' ')[0].replace('.', ':');
+                    const eventEndTime = new Date(show.date + 'T' + endTimeStr + ':00');
+                    if (eventEndTime < now) {
+                        isPast = true;
+                    }
+                } else {
+                    // No specific end time, keep active until end of day
+                    const endOfDay = new Date(show.date + 'T23:59:59');
+                    if (endOfDay < now) isPast = true;
+                }
+            }
             
             if (!showPast && isPast) return;
             
-            const day = showDate.getDate();
-            const month = showDate.toLocaleString('en-US', { month: 'short' });
-            const year = showDate.getFullYear();
+            const displayDate = new Date(show.date + 'T12:00:00');
+            const day = displayDate.getDate();
+            const month = displayDate.toLocaleString('en-US', { month: 'short' });
+            const year = displayDate.getFullYear();
 
             const showCard = document.createElement('div');
             showCard.className = `show-card ${isPast ? 'past-event' : ''}`;
@@ -394,9 +450,18 @@ document.addEventListener('DOMContentLoaded', () => {
         // Filter members
         let filtered = allMembers.filter(member => {
             const matchesSearch = member.name.toLowerCase().includes(searchTerm);
-            const matchesStatus = statusValue === 'all' || 
-                                 (statusValue === 'active' && member.is_active) || 
-                                 (statusValue === 'former' && !member.is_active);
+            let matchesStatus = false;
+            
+            if (statusValue === 'all') {
+                matchesStatus = true;
+            } else if (statusValue === 'active') {
+                matchesStatus = member.is_active && !member.position.includes('Trainee');
+            } else if (statusValue === 'trainee') {
+                matchesStatus = member.is_active && member.position.includes('Trainee');
+            } else if (statusValue === 'former') {
+                matchesStatus = !member.is_active;
+            }
+            
             return matchesSearch && matchesStatus;
         });
 
@@ -413,13 +478,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Clear grids
         if (activeGrid) activeGrid.innerHTML = '';
+        if (traineeGrid) traineeGrid.innerHTML = '';
         if (formerGrid) formerGrid.innerHTML = '';
 
-        const activeMembers = filtered.filter(m => m.is_active);
+        const activeMembers = filtered.filter(m => m.is_active && !m.position.includes('Trainee'));
+        const traineeMembers = filtered.filter(m => m.is_active && m.position.includes('Trainee'));
         const formerMembers = filtered.filter(m => !m.is_active);
 
         // Update visibility of sections
         if (activeSection) activeSection.style.display = activeMembers.length > 0 ? 'block' : 'none';
+        
+        const traineeSection = document.getElementById('trainee-members-section');
+        if (traineeSection) {
+            traineeSection.style.display = traineeMembers.length > 0 ? 'block' : 'none';
+        }
         
         // Handle Former Members Section visibility based on filter and toggle
         const isFormerFiltered = statusValue === 'all' || statusValue === 'former';
@@ -453,6 +525,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (formerGrid) {
             formerMembers.forEach(member => {
                 formerGrid.appendChild(createMemberCard(member));
+            });
+        }
+
+        // Render trainee members
+        if (traineeGrid) {
+            traineeMembers.forEach(member => {
+                traineeGrid.appendChild(createMemberCard(member));
             });
         }
     }

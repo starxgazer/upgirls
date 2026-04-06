@@ -1,6 +1,69 @@
 [
   {
     "id": 1,
+    "date": "2026-03-08",
+    "name": "Bukber with UPgirls 2026 (Updated)",
+    "type": "Formasi Lengkap (Batch 1, 2, 3)",
+    "ticket_link": "https://forms.gle/cuPZPAMxjXPq2kA1A",
+    "time": "Buka Puasa Bersama",
+    "location": "Jakarta Pusat (Detail lokasi via tiket)"
+  },
+  {
+    "id": 2,
+    "date": "2026-03-09",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 1: JEN, ELA, DEA, KIA",
+    "ticket_link": "https://forms.gle/Rj2hTr51x4mr6Aa78",
+    "time": "19.00–20.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 3,
+    "date": "2026-03-09",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 2: KEI, ANE, REI, KIA",
+    "ticket_link": "https://forms.gle/Rj2hTr51x4mr6Aa78",
+    "time": "20.00–21.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 4,
+    "date": "2026-03-10",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 1: ALY, ODY, BEE, BEA",
+    "ticket_link": "https://forms.gle/Rj2hTr51x4mr6Aa78",
+    "time": "19.00–20.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 5,
+    "date": "2026-03-10",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 2: ALY, ODY, YUI, BEA",
+    "ticket_link": "https://forms.gle/Rj2hTr51x4mr6Aa78",
+    "time": "20.00–21.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 6,
+    "date": "2026-03-11",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 1: GIA, BYA, AMY",
+    "ticket_link": "https://forms.gle/Rj2hTr51x4mr6Aa78",
+    "time": "19.00–20.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 7,
+    "date": "2026-03-11",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 2: GIA, BYA, AMY",
+    "ticket_link": "https://forms.gle/Rj2hTr51x4mr6Aa78",
+    "time": "20.00–21.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 8,
     "date": "2026-03-29",
     "name": "The Minishow UPgirls",
     "type": "HOT SEAT (150K)",
@@ -9,7 +72,7 @@
     "location": "Ice Palace, 4F, Lotte Mall, Kuningan"
   },
   {
-    "id": 2,
+    "id": 9,
     "date": "2026-03-29",
     "name": "The Minishow UPgirls",
     "type": "REGULAR (100K)",
@@ -18,7 +81,7 @@
     "location": "Ice Palace, 4F, Lotte Mall, Kuningan"
   },
   {
-    "id": 3,
+    "id": 10,
     "date": "2025-09-14",
     "name": "THE BEGINNING",
     "type": "HOT SEAT (150K)",
@@ -27,7 +90,7 @@
     "location": "Ice Palace 4F, Lotte Mall"
   },
   {
-    "id": 4,
+    "id": 11,
     "date": "2025-09-14",
     "name": "THE BEGINNING",
     "type": "REGULER (100K)",
@@ -36,7 +99,7 @@
     "location": "Ice Palace 4F, Lotte Mall"
   },
   {
-    "id": 5,
+    "id": 12,
     "date": "2025-08-31",
     "name": "The Minishow UPgirls",
     "type": "HOT SEAT (150K)",
@@ -45,12 +108,327 @@
     "location": "Ice Palace 4F, Lotte Mall Kuningan"
   },
   {
-    "id": 6,
+    "id": 13,
     "date": "2025-08-31",
     "name": "The Minishow UPgirls",
     "type": "Regular Seat (100K)",
     "ticket_link": "https://forms.gle/4cNwP3FbkTMZk2FNA",
     "time": "17.00 WIB",
     "location": "Ice Palace 4F, Lotte Mall Kuningan"
+  },
+  {
+    "id": 14,
+    "date": "2025-11-10",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 1: REI, ANE, AYA, OWY",
+    "ticket_link": "https://forms.gle/Rj2hTr51x4mr6Aa78",
+    "time": "19.00–20.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 15,
+    "date": "2025-11-10",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 2: ARA, GIA, URA, OWY",
+    "ticket_link": "https://forms.gle/Rj2hTr51x4mr6Aa78",
+    "time": "20.00–21.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 16,
+    "date": "2025-11-11",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 1: BEE, UTE, ZEA, BYA",
+    "ticket_link": "https://forms.gle/Rj2hTr51x4mr6Aa78",
+    "time": "19.00–20.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 17,
+    "date": "2025-11-11",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 2: DEI, BEA, CAL, NAT",
+    "ticket_link": "https://forms.gle/Rj2hTr51x4mr6Aa78",
+    "time": "20.00–21.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 18,
+    "date": "2025-11-08",
+    "name": "Cafe Takeover with UPgirls",
+    "type": "Cafe Takeover Session",
+    "ticket_link": "https://forms.gle/cuPZPAMxjXPq2kA1A",
+    "time": "Buka sampai 23:00 WIB",
+    "location": "Kopi Doeloe, Jl. Guntur No.72, Setiabudi, Jakarta Selatan"
+  },
+  {
+    "id": 19,
+    "date": "2025-11-12",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 1: ODY, ACA, KIA, CIA, AMY",
+    "ticket_link": "https://forms.gle/Rj2hTr51x4mr6Aa78",
+    "time": "19.00–20.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 20,
+    "date": "2025-11-12",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 2: ODY, UEL, KIA, ALY, KAY",
+    "ticket_link": "https://forms.gle/Rj2hTr51x4mr6Aa78",
+    "time": "20.00–21.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 21,
+    "date": "2025-08-11",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 1: NAT, BEA, DEI, CIA",
+    "ticket_link": "http://linktr.ee/TheUPgirls",
+    "time": "19.00–20.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 22,
+    "date": "2025-08-11",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 2: NAT, DEI, AMY",
+    "ticket_link": "http://linktr.ee/TheUPgirls",
+    "time": "20.00–21.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 23,
+    "date": "2025-08-12",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 1: EVE, BYA, UEL, RIN",
+    "ticket_link": "http://linktr.ee/TheUPgirls",
+    "time": "19.00–20.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 24,
+    "date": "2025-08-12",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 2: EVE, ACA, ANE, AYA",
+    "ticket_link": "http://linktr.ee/TheUPgirls",
+    "time": "20.00–21.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 25,
+    "date": "2025-08-13",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 1: UTE, GIA, KIA, ODY",
+    "ticket_link": "http://linktr.ee/TheUPgirls",
+    "time": "19.00–20.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 26,
+    "date": "2025-08-13",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 2: CAL, URA, REI, ALY",
+    "ticket_link": "http://linktr.ee/TheUPgirls",
+    "time": "20.00–21.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 27,
+    "date": "2025-08-14",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 1: ARA, ZEA, NAY, OWY",
+    "ticket_link": "http://linktr.ee/TheUPgirls",
+    "time": "19.00–20.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 28,
+    "date": "2025-08-14",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 2: OWY",
+    "ticket_link": "http://linktr.ee/TheUPgirls",
+    "time": "20.00–21.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 29,
+    "date": "2025-09-15",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 1: BEE, CIA, URA, EVE",
+    "ticket_link": "http://linktr.ee/TheUPgirls",
+    "time": "19.00–20.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 30,
+    "date": "2025-09-15",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 2: ALY, GIA, KIA, EVE",
+    "ticket_link": "http://linktr.ee/TheUPgirls",
+    "time": "20.00–21.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 31,
+    "date": "2025-09-16",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 1: ODY, DEI, BEA, NAT",
+    "ticket_link": "http://linktr.ee/TheUPgirls",
+    "time": "19.00–20.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 32,
+    "date": "2025-09-16",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 2: DEI, UEL, NAT",
+    "ticket_link": "http://linktr.ee/TheUPgirls",
+    "time": "20.00–21.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 33,
+    "date": "2025-09-17",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 1: ACA, ZEA, REI, ARA",
+    "ticket_link": "http://linktr.ee/TheUPgirls",
+    "time": "19.00–20.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 34,
+    "date": "2025-09-17",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 2: AMY, UTE, BYA, ANE",
+    "ticket_link": "http://linktr.ee/TheUPgirls",
+    "time": "20.00–21.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 35,
+    "date": "2025-09-18",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 1: OWY, CAL, AYA, NAY",
+    "ticket_link": "http://linktr.ee/TheUPgirls",
+    "time": "19.00–20.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 36,
+    "date": "2025-09-18",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 2: OWY, NAY",
+    "ticket_link": "http://linktr.ee/TheUPgirls",
+    "time": "20.00–21.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 37,
+    "date": "2025-10-20",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 1: BYA, ANE, KIA, GIA",
+    "ticket_link": "https://bit.ly/QTimeUPgirls",
+    "time": "19.00–20.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 38,
+    "date": "2025-10-20",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 2: BEE, AYA, URA, ARA",
+    "ticket_link": "https://bit.ly/QTimeUPgirls",
+    "time": "20.00–21.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 39,
+    "date": "2025-10-21",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 1: BEA, OWY, NAT, ZEA",
+    "ticket_link": "https://bit.ly/QTimeUPgirls",
+    "time": "19.00–20.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 40,
+    "date": "2025-10-21",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 2: CIA, OWY, CAL, UTE",
+    "ticket_link": "https://bit.ly/QTimeUPgirls",
+    "time": "20.00–21.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 41,
+    "date": "2025-10-22",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 1: ACA, ODY, DEI, REI",
+    "ticket_link": "https://bit.ly/QTimeUPgirls",
+    "time": "19.00–20.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 42,
+    "date": "2025-10-22",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 2: AMY",
+    "ticket_link": "https://bit.ly/QTimeUPgirls",
+    "time": "20.00–21.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 43,
+    "date": "2026-04-06",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 1: ANE, GIA, BEE, KIA",
+    "ticket_link": "https://forms.gle/Rj2hTr51x4mr6Aa78",
+    "time": "19.00–20.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 44,
+    "date": "2026-04-06",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 2: ANE, GIA, ELA, KIA",
+    "ticket_link": "https://forms.gle/Rj2hTr51x4mr6Aa78",
+    "time": "20.00–21.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 45,
+    "date": "2026-04-07",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 1: ODY, ALY, AMY, YUI",
+    "ticket_link": "https://forms.gle/Rj2hTr51x4mr6Aa78",
+    "time": "19.00–20.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 46,
+    "date": "2026-04-07",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 2: ODY, ALY, AMY, UEL",
+    "ticket_link": "https://forms.gle/Rj2hTr51x4mr6Aa78",
+    "time": "20.00–21.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 47,
+    "date": "2026-04-08",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 1: REI, KEI, BYA",
+    "ticket_link": "https://forms.gle/Rj2hTr51x4mr6Aa78",
+    "time": "19.00–20.00 WIB",
+    "location": "Online / Virtual Room"
+  },
+  {
+    "id": 48,
+    "date": "2026-04-08",
+    "name": "Q-Time Bersama UPgirls",
+    "type": "Session 2: DEA, JEN",
+    "ticket_link": "https://forms.gle/Rj2hTr51x4mr6Aa78",
+    "time": "20.00–21.00 WIB",
+    "location": "Online / Virtual Room"
   }
 ]

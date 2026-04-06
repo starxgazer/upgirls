@@ -1028,17 +1028,23 @@ footer a {
 }
 
 .past-event {
-    opacity: 0.8;
+    opacity: 0.7;
+    filter: grayscale(0.5);
+    background-color: #f9f9f9;
 }
 
 .past-event:hover {
-    opacity: 1;
+    opacity: 0.85;
+    filter: grayscale(0.3);
 }
 
-.ticket-link.unavailable {
-    background-color: #666;
+.ticket-link.disabled {
+    background-color: #ccc;
+    color: #666;
     cursor: not-allowed;
     pointer-events: none;
+    border: none;
+    opacity: 0.8;
 }
 
 /* Calendar Styling */

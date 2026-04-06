@@ -35,6 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let currentSectionId = '';
         const scrollPos = window.scrollY + 150; // Offset for header height
 
+        // If on a subpage, identify current page from path
+        const isSubpage = document.body.classList.contains('subpage');
+        const currentPath = window.location.pathname;
+
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
             const sectionHeight = section.offsetHeight;
@@ -46,8 +50,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
         navLinks.forEach(link => {
             link.classList.remove('active');
-            if (link.getAttribute('href') === `#${currentSectionId}`) {
+            const href = link.getAttribute('href');
+            
+            // Check if it's the current section on home page OR if it's the current subpage
+            if ((!isSubpage && href === `#${currentSectionId}`) || 
+                (isSubpage && currentPath.includes(href))) {
                 link.classList.add('active');
+                
+                // Scroll the active menu item to the center of the navigation bar
+                const navUl = document.querySelector('header nav ul');
+                if (navUl && window.innerWidth <= 768) {
+                    const activeLi = link.parentElement;
+                    const containerWidth = navUl.offsetWidth;
+                    const itemLeft = activeLi.offsetLeft;
+                    const itemWidth = activeLi.offsetWidth;
+                    
+                    // Calculate the scroll position to center the item
+                    const targetScrollPos = itemLeft - (containerWidth / 2) + (itemWidth / 2);
+                    
+                    navUl.scrollTo({
+                        left: targetScrollPos,
+                        behavior: 'smooth'
+                    });
+                }
             }
         });
     }

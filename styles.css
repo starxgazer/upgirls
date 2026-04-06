@@ -38,13 +38,13 @@ header.scrolled {
 }
 
 header .header-logo {
-    height: 60px;
+    height: 100px;
     width: auto;
     transition: all 0.3s ease;
 }
 
 header.scrolled .header-logo {
-    height: 40px;
+    height: 50px;
 }
 
 .logo-container {
@@ -88,6 +88,12 @@ header nav ul li a {
     font-weight: bold;
     text-transform: uppercase;
     font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+header nav ul li a.active {
+    color: var(--primary-pink);
+    border-bottom: 2px solid var(--primary-pink);
 }
 
 #about {
@@ -605,6 +611,32 @@ footer a {
 }
 
 @media (max-width: 768px) {
+    header .header-logo {
+        height: 70px;
+    }
+    
+    header.scrolled .header-logo {
+        height: 40px;
+    }
+
+    header nav ul {
+        justify-content: flex-start;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 5px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+    }
+    
+    header nav ul::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+    }
+
+    header nav ul li {
+        margin: 0 0.8rem;
+        flex: 0 0 auto;
+    }
+
     .member-detail-grid {
         grid-template-columns: 1fr;
     }

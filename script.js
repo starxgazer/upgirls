@@ -26,8 +26,32 @@ document.addEventListener('DOMContentLoaded', () => {
     let allSongs = [];
     let allShows = [];
 
-    // Handle header scroll effect
+    // Handle header scroll effect and navigation highlight
     const header = document.querySelector('header');
+    const navLinks = document.querySelectorAll('header nav ul li a');
+    const sections = document.querySelectorAll('main section');
+
+    function highlightNav() {
+        let currentSectionId = '';
+        const scrollPos = window.scrollY + 150; // Offset for header height
+
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+
+            if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                currentSectionId = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${currentSectionId}`) {
+                link.classList.add('active');
+            }
+        });
+    }
+
     if (header) {
         window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
@@ -35,7 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 header.classList.remove('scrolled');
             }
+            highlightNav();
         });
+        // Initial check on load
+        highlightNav();
     }
 
     if (activeGrid) {

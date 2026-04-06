@@ -464,19 +464,18 @@ h3 {
 /* Controls for Search, Filter, Sort */
 .controls {
     display: flex;
-    justify-content: space-between;
-    align-items: stretch;
+    flex-direction: row;
     gap: 1.5rem;
     margin-top: 2rem;
     margin-bottom: 3rem;
     background: #fdfdfd;
     padding: 2rem;
     border-radius: 20px;
-    flex-wrap: wrap;
     box-sizing: border-box;
     width: 100%;
     box-shadow: 0 5px 20px rgba(0,0,0,0.05);
     border: 1px solid #f0f0f0;
+    align-items: center;
 }
 
 .discography-controls {
@@ -485,7 +484,7 @@ h3 {
 
 .search-box {
     position: relative;
-    flex: 0 0 250px;
+    flex: 2;
 }
 
 .search-box::before {
@@ -497,6 +496,7 @@ h3 {
     color: #999;
     font-size: 0.9rem;
     pointer-events: none;
+    z-index: 1;
 }
 
 .search-box input {
@@ -508,6 +508,8 @@ h3 {
     font-family: inherit;
     transition: all 0.3s ease;
     box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    position: relative;
+    box-sizing: border-box;
 }
 
 .search-box input:focus {
@@ -521,8 +523,7 @@ h3 {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
-    flex: 1;
-    min-width: 300px;
+    flex: 3;
 }
 
 .filter-sort-box select {
@@ -572,9 +573,6 @@ h3 {
     }
     .search-box, .filter-sort-box {
         width: 100%;
-        max-width: none;
-        flex: none;
-        min-width: 0;
     }
 }
 

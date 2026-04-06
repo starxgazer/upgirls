@@ -55,6 +55,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (sortOrder) sortOrder.addEventListener('change', renderMembers);
                 } else {
                     // On home page, separate active (regular) and trainee members
+                    // Sort alphabetically first
+                    allMembers.sort((a, b) => a.name.localeCompare(b.name));
+                    
                     const activeOnly = allMembers.filter(m => m.is_active && !m.position.includes('Trainee'));
                     const traineeOnly = allMembers.filter(m => m.is_active && m.position.includes('Trainee'));
                     
@@ -87,6 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.json())
             .then(data => {
                 allSongs = data;
+                // Sort alphabetically by title by default
+                allSongs.sort((a, b) => a.title.localeCompare(b.title));
                 renderDiscography(allSongs);
 
                 // Add event listeners for discography controls

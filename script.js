@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const formerGrid = document.getElementById('former-members-grid');
     const searchInput = document.getElementById('member-search');
     const statusFilter = document.getElementById('status-filter');
+    const batchFilter = document.getElementById('batch-filter');
     const sortOrder = document.getElementById('sort-order');
     const activeSection = document.getElementById('active-members-section');
     const formerSection = document.getElementById('former-members-section');
@@ -104,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Add event listeners for controls
                     if (searchInput) searchInput.addEventListener('input', renderMembers);
                     if (statusFilter) statusFilter.addEventListener('change', renderMembers);
+                    if (batchFilter) batchFilter.addEventListener('change', renderMembers);
                     if (sortOrder) sortOrder.addEventListener('change', renderMembers);
                 } else {
                     // On home page, separate active (regular) and trainee members
@@ -502,6 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderMembers() {
         const searchTerm = (searchInput && searchInput.value) ? searchInput.value.toLowerCase() : '';
         const statusValue = statusFilter ? statusFilter.value : (document.querySelector('#members-archive') ? 'all' : 'active');
+        const batchValue = batchFilter ? batchFilter.value : 'all';
         const sortValue = sortOrder ? sortOrder.value : 'asc';
 
         // Filter members
@@ -519,7 +522,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 matchesStatus = !member.is_active;
             }
             
-            return matchesSearch && matchesStatus;
+            let matchesBatch = false;
+            if (batchValue === 'all') {
+                matchesBatch = true;
+            } else if (batchValue === 'Trainee') {
+                matchesBatch = member.batch === 'Trainee';
+            } else {
+                matchesBatch = member.batch === batchValue;
+            }
+            
+            return matchesSearch && matchesStatus && matchesBatch;
         });
 
         // Sort members

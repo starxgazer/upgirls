@@ -785,6 +785,7 @@ function loadMemberDetail(name) {
                 const metaRows = [];
                 if (isValid(member.full_name) && member.full_name.toLowerCase() !== member.name.toLowerCase()) metaRows.push(`<li><span class="label">Full Name</span><span class="value">${member.full_name}</span></li>`);
                 if (isValid(member.position)) metaRows.push(`<li><span class="label">Position</span><span class="value">${member.position}</span></li>`);
+                if (isValid(member.batch)) metaRows.push(`<li><span class="label">Batch</span><span class="value">${member.batch}</span></li>`);
                 if (isValid(member.birth_date)) metaRows.push(`<li><span class="label">Birth Date</span><span class="value">${member.birth_date}</span></li>`);
                 if (isValid(member.birth_place)) metaRows.push(`<li><span class="label">Birth Place</span><span class="value">${member.birth_place}</span></li>`);
                 if (isValid(member.blood_type)) metaRows.push(`<li><span class="label">Blood Type</span><span class="value">${member.blood_type}</span></li>`);

@@ -1,4 +1,4 @@
-﻿[
+[
   {
     "name": "Dei",
     "full_name": "Devina Natalia K",
@@ -17,7 +17,8 @@
     "tiktok": "upgirls.dei",
     "x": "Upgirls_Dei",
     "idn_live": "UPgirls.dei",
-    "is_active": false
+    "is_active": false,
+    "batch": "1"
   },
   {
     "name": "Ute",
@@ -36,7 +37,8 @@
     "instagram": "upgirls.ute",
     "x": "upgirls_ute",
     "idn_live": "upgirls.ute",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Bya",
@@ -56,7 +58,8 @@
     "tiktok": "upgirls.bya",
     "x": "upgirls_bya",
     "idn_live": "upgirls.bya",
-    "is_active": true
+    "is_active": true,
+    "batch": "1"
   },
   {
     "name": "Ara",
@@ -75,7 +78,8 @@
     "instagram": "upgirls.ara",
     "tiktok": "upgirls.ara",
     "idn_live": "UPgirls.Ara",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Cal",
@@ -94,7 +98,8 @@
     "instagram": "upgirls.cal",
     "tiktok": "upgirls.cal",
     "idn_live": "UPgirls.Cal",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Aca",
@@ -113,7 +118,8 @@
     "instagram": "upgirls.aca",
     "tiktok": "upgirls.aca",
     "idn_live": "UPgirls.aca",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Uel",
@@ -132,7 +138,8 @@
     "instagram": "upgirls.uel",
     "tiktok": "upgirls_uel01",
     "idn_live": "UPgirls.uel",
-    "is_active": true
+    "is_active": true,
+    "batch": "2"
   },
   {
     "name": "Aya",
@@ -151,7 +158,8 @@
     "instagram": "upgirls.aya",
     "tiktok": "upgirls.aya",
     "idn_live": "UPgirls.aya",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Rei",
@@ -170,7 +178,8 @@
     "instagram": "upgirls.rei",
     "tiktok": "upgirls.rei",
     "idn_live": "UPgirls.rei",
-    "is_active": true
+    "is_active": true,
+    "batch": "2"
   },
   {
     "name": "Gia",
@@ -189,7 +198,8 @@
     "instagram": "upgirls.gia",
     "tiktok": "upgirls.gia",
     "idn_live": "UPgirls.Gia",
-    "is_active": true
+    "is_active": true,
+    "batch": "1"
   },
   {
     "name": "Kay",
@@ -208,7 +218,8 @@
     "instagram": "upgirls.kay",
     "tiktok": "upgirls.kay",
     "idn_live": "UPgirls.kay",
-    "is_active": true
+    "is_active": true,
+    "batch": "Trainee"
   },
   {
     "name": "Amy",
@@ -227,7 +238,8 @@
     "instagram": "upgirls.amy",
     "tiktok": "upgirls.amy",
     "idn_live": "UPgirls.amy",
-    "is_active": true
+    "is_active": true,
+    "batch": "3"
   },
   {
     "name": "Aly",
@@ -246,7 +258,8 @@
     "instagram": "upgirls.aly",
     "tiktok": "upgirls.aly",
     "idn_live": "UPgirls.aly",
-    "is_active": true
+    "is_active": true,
+    "batch": "3"
   },
   {
     "name": "Kia",
@@ -265,7 +278,8 @@
     "instagram": "upgirls.kia",
     "tiktok": "upgirls.kia",
     "idn_live": "UPgirls.kia",
-    "is_active": true
+    "is_active": true,
+    "batch": "3"
   },
   {
     "name": "Ody",
@@ -284,7 +298,8 @@
     "instagram": "audrey.tjioe",
     "tiktok": "upgirls.ody",
     "idn_live": "UPgirls.ody",
-    "is_active": true
+    "is_active": true,
+    "batch": "3"
   },
   {
     "name": "Bea",
@@ -303,7 +318,8 @@
     "instagram": "upgirls.bea",
     "tiktok": "upgirls.bea",
     "idn_live": "UPgirls.bea",
-    "is_active": true
+    "is_active": true,
+    "batch": "3"
   },
   {
     "name": "Cia",
@@ -322,7 +338,8 @@
     "instagram": "upgirls.cia",
     "tiktok": "upgirls.cia",
     "idn_live": "UPgirls.cia",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Bee",
@@ -341,7 +358,8 @@
     "instagram": "upgirls.bee",
     "tiktok": "upgirls.bee",
     "idn_live": "UPgirls.bee",
-    "is_active": true
+    "is_active": true,
+    "batch": "3"
   },
   {
     "name": "Ane",
@@ -360,7 +378,8 @@
     "instagram": "upgirls.ane",
     "tiktok": "upgirls_ane",
     "idn_live": "UPgirls.ane",
-    "is_active": true
+    "is_active": true,
+    "batch": "2"
   },
   {
     "name": "Yui",
@@ -379,7 +398,8 @@
     "instagram": "upgirls.yui",
     "tiktok": "upgirls.yui",
     "idn_live": "UPgirls.yui",
-    "is_active": true
+    "is_active": true,
+    "batch": "Trainee"
   },
   {
     "name": "Ela",
@@ -398,7 +418,8 @@
     "instagram": "upgirls.ela",
     "tiktok": "upgirls.ela",
     "idn_live": "UPgirls.ela",
-    "is_active": true
+    "is_active": true,
+    "batch": "Trainee"
   },
   {
     "name": "Kei",
@@ -417,7 +438,8 @@
     "instagram": "upgirls.kei",
     "tiktok": "upgirls.kei",
     "idn_live": "UPgirls.kei",
-    "is_active": true
+    "is_active": true,
+    "batch": "Trainee"
   },
   {
     "name": "Dea",
@@ -436,7 +458,8 @@
     "instagram": "upgirls.dea",
     "tiktok": "upgirls.dea",
     "idn_live": "UPgirls.dea",
-    "is_active": true
+    "is_active": true,
+    "batch": "Trainee"
   },
   {
     "name": "Rea",
@@ -453,7 +476,8 @@
     "image": "images/Rea.jpg",
     "facts": "She joined the group in June 2023. It seems that she left the group in early 2024.",
     "instagram": "N/A",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Val",
@@ -471,7 +495,8 @@
     "facts": "She was born in Depok, West Java, Indonesia. Her hometown is Jakarta, Indonesia. She was a member of JKT48 Academy's Class B in 2020 (10th Generation). The song she auditioned with to join JKT48 was 'L.O.V.E' by Frank Sinatra. Her favorite song is 'Departure' by Masatoshi Ono. Val's favorite video game is Pacman. She has a younger brother. Her favorite movie is Black Swan (2010). Val left the group sometime in 2023.",
     "instagram": "danessavalerie",
     "tiktok": "danessavalerie",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Vey",
@@ -488,7 +513,8 @@
     "image": "images/Vey.jpg",
     "facts": "She was born in Toraja, South Sulawesi, Indonesia. She joined the group in January 2023. Her official fanbase name is Vortex.INA. She likes singing and dancing. Vey left the group in September 2024.",
     "instagram": "astrid.veyne",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Pem",
@@ -508,7 +534,8 @@
     "instagram": "pamelakrysanthe",
     "tiktok": "pamelakrysanthe",
     "x": "pamelakrysanthe",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Dee",
@@ -526,7 +553,8 @@
     "facts": "She joined the group in December 2022. Dee left the group in December 2023.",
     "instagram": "dilatirto rejo",
     "tiktok": "deedilatirto",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Liz",
@@ -542,7 +570,8 @@
     "representative_emoji": "N/A",
     "image": "images/Liz.jpg",
     "facts": "She joined the group in January 2023. Her official fanbase name is Liz Gooo. Liz left the group in November 2023.",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Cia",
@@ -558,7 +587,8 @@
     "representative_emoji": "N/A",
     "image": "images/Cia_Former.jpg",
     "facts": "She joined the group in November 2023. Her official fanbase name is TerCiaCia. Cia left the group in January 2024.",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Icy",
@@ -575,7 +605,8 @@
     "image": "images/Icy.jpg",
     "facts": "She was announced as a Batch 2 member on May 18, 2024. Icy left the group in June 2024.",
     "instagram": "N/A",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Fia",
@@ -592,7 +623,8 @@
     "image": "images/Fia.jpg",
     "facts": "She was born in Depok, Java, Indonesia. Fia joined the group in February 2023. Her official fanbase name is Celesfia. She likes gymnastics, skating and dancing. In August 2024 she announced her departure from the group. She officially left the group on September 24, 2024.",
     "instagram": "syafiraabby",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Una",
@@ -610,7 +642,8 @@
     "facts": "She was born in Banjarbaru, South Kalimantan, Indonesia. She joined the group in September 2023. Her official fanbase name is U-Shine. She likes movies and dancing. On June 29, 2024, it was announced that she would go on hiatus due to health reasons. She left the group in 2025.",
     "instagram": "upgirls.una",
     "x": "upgirls_una",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Nat",
@@ -627,7 +660,8 @@
     "image": "images/Nat.jpg",
     "facts": "Nat has been active in various lessons since childhood, including piano, vocals, classical guitar, choir, ballet, and cheerleading. She participated in auditions for SM Entertainment and passed up to the fourth stage. She also tried out for Indonesian Idol Junior Season 2 and The Voice Kids Indonesia Season 2. Her official fanbase name is Gwenchanat. She plays guitar and ukulele, likes singing, dancing, and watching movies. Some webtoons she recommends are 'The Boxer', 'My Anti-Fan', etc. She officially left the group December 2, 2025.",
     "instagram": "angelinenatasyaaa",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Ura",
@@ -644,7 +678,8 @@
     "image": "images/Ura.jpg",
     "facts": "Ura's career began at Kimmy Jayanti Modelling School. She was a member of JKT48 Academy's Class B in 2020 (10th Generation) but left due to internal restructuring and later debuted with UPgirls. During her JKT48 audition, she sang 'Fly Me To The Moon' by Frank Sinatra. Initially, she couldn't dance or sing but learned from coaches and teammates. Despite being an introvert, she talks a lot during MCing and fan interactions. Her official fanbase name is UraCan. She officially left the group December 3, 2025.",
     "instagram": "nauraaasfn",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Nay",
@@ -660,7 +695,8 @@
     "representative_emoji": "🦩",
     "image": "images/Nay.png",
     "facts": "Nay previously debuted with the group SUN in 2022 before joining UPgirls in 2024 as part of Batch 1. She was announced as a member on June 19, 2024. She has participated in fashion shows since age 3 but stopped due to self-confidence issues regarding her height. She can perform traditional Jaipong dance and has won jaipongan competitions. She loves chocolate, cheese, and coffee (buying iced coffee almost every day). She likes singing and attending music festivals. She once almost drowned while playing banana boat because the life jacket was too big. Her official fanbase name is Nirmanay. She left the group in late 2025.",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Eve",
@@ -677,7 +713,8 @@
     "image": "images/Eve.jpg",
     "facts": "Eve was born in Bekasi, West Java, Indonesia. She joined the group in December 2023. Her official fanbase name is B.E.L.I.E.V.E. She was a member of Kalopsia. Eve likes cooking and dancing. She left the group in late 2025.",
     "instagram": "evelinevanessaa",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Rin",
@@ -694,7 +731,8 @@
     "image": "images/Rin.jpg",
     "facts": "Rin is the vice captain of UPgirls and is often called the 'mother' of the group. She has wanted to be an idol since childhood. Before joining UPgirls in August 2023 (debut), she was active in dance clubs in high school and college. She was a softball athlete in high school and lived in Scotland as a child. She is a K-pop enthusiast and likes traveling alone. Her official fanbase name is LabyRINth. She left the group in late 2025.",
     "instagram": "leen.sml",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Lea",
@@ -711,7 +749,8 @@
     "image": "images/Lea.jpg",
     "facts": "She was born in Jakarta, Indonesia. She was announced as a member on May 12, 2024. She left the group in late 2025.",
     "instagram": "leandravinci_",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Uty",
@@ -729,7 +768,8 @@
     "facts": "She was born in Bandung, West Java, Indonesia. She was announced as a trainee member on May 12, 2024. She left the group in late 2025.",
     "instagram": "upgirls.uty",
     "idn_live": "UPgirls.uty",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Ily",
@@ -746,7 +786,8 @@
     "image": "images/Ily.jpg",
     "facts": "Ily was a member of the dance cover team KINDO Project and previously debuted with the girl group Wishley. She reached the top 20 of a girlband competition in 2021. During college, she won several dance competitions and was a lead actor in campus theater. She studied Korean for 3 years and likes jazz, bossa nova, and classic music. She is now part of vocal group RAVELIA. She has a habit of touching her ears when sleepy and loves mozzarella and mentai. She left the group in late 2025.",
     "instagram": "paipiette",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Ell",
@@ -762,7 +803,8 @@
     "representative_emoji": "🛶",
     "image": "images/Ell.jpg",
     "facts": "She was announced as a member on March 1, 2025. She left the group in 2025.",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Zea",
@@ -779,7 +821,8 @@
     "image": "images/Zea.jpg",
     "facts": "Zea joined the group in November 2023. Her official fanbase name is Zeasthetic. She likes cooking and eating snacks. Zea plays Mobile Legends with Ute. She left the group in 2025.",
     "instagram": "zarafelishia",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Owy",
@@ -796,7 +839,8 @@
     "image": "images/Owy.jpg",
     "facts": "She was born in Jakarta, Indonesia. She was announced as a trainee member on May 12, 2024. She left the group in 2024.",
     "tiktok": "upgirls.owy",
-    "is_active": false
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Jen",
@@ -815,6 +859,7 @@
     "instagram": "upgirls.jen",
     "tiktok": "upgirls.jen",
     "idn_live": "UPgirls.jen",
-    "is_active": true
+    "is_active": true,
+    "batch": "Trainee"
   }
 ]

@@ -430,5 +430,45 @@
     "ticket_link": "https://forms.gle/Rj2hTr51x4mr6Aa78",
     "time": "20.00–21.00 WIB",
     "location": "Online / Virtual Room"
+  },
+  {
+    "id": 49,
+    "date": "2026-04-01",
+    "name": "The Minishow UPgirls",
+    "type": "Special: Ulang Tahun Ody & Debut Yui",
+    "ticket_link": "",
+    "time": "TBA",
+    "location": "Ice Palace, 4F, Lotte Mall, Kuningan",
+    "source": "Instagram @theupgirls (Apr 1, 2026)"
+  },
+  {
+    "id": 50,
+    "date": "2026-04-13",
+    "name": "The Minishow UPgirls",
+    "type": "Minishow",
+    "ticket_link": "",
+    "time": "TBA",
+    "location": "Ice Palace, 4F, Lotte Mall, Kuningan",
+    "source": "Instagram @theupgirls (Apr 13, 2026)"
+  },
+  {
+    "id": 51,
+    "date": "2026-04-20",
+    "name": "The Minishow UPgirls",
+    "type": "Minishow",
+    "ticket_link": "",
+    "time": "TBA",
+    "location": "TBA",
+    "source": "Instagram @theupgirls (Apr 24 post: 'Minishow minggu kemarin')"
+  },
+  {
+    "id": 52,
+    "date": "2026-04-28",
+    "name": "Grand Opening @assemble_jakarta",
+    "type": "Event: Grand Opening",
+    "ticket_link": "",
+    "time": "TBA",
+    "location": "Assemble Jakarta",
+    "source": "Instagram @theupgirls (Apr 28, 2026)"
   }
 ]

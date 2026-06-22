@@ -470,5 +470,175 @@
     "time": "TBA",
     "location": "Assemble Jakarta",
     "source": "Instagram @theupgirls (Apr 28, 2026)"
+  },
+  {
+    "id": 53,
+    "date": "2026-04-26",
+    "name": "MeetUP with UPgirls",
+    "type": "Event: MeetUP",
+    "ticket_link": "https://forms.gle/Sa2zqzdaNfzUQqvm7",
+    "time": "TBA",
+    "location": "TBA",
+    "source": "TikTok @theupgirls01 (Apr 26, 2026)"
+  },
+  {
+    "id": 54,
+    "date": "2026-05-02",
+    "name": "Cafe Takeover with UPgirls",
+    "type": "Event: Cafe Takeover",
+    "ticket_link": "https://forms.gle/5Wboi2ik1rxZHZb76",
+    "time": "TBA",
+    "location": "Kopi Doeloe, Jl. Guntur No.72, Setiabudi",
+    "source": "Instagram @ la la (May 2, 2026)"
+  },
+  {
+    "id": 55,
+    "date": "2026-05-01",
+    "name": "Q-Time Bersama UPgirls (Mei 2026)",
+    "type": "Schedule for May 2026",
+    "ticket_link": "https://forms.gle/HvGtovtvXxAj6M8TA",
+    "time": "TBA",
+    "location": "Online / Virtual Room",
+    "source": "X @theupgirls (May 6 post)"
+  },
+  {
+    "id": 56,
+    "date": "TBA",
+    "name": "Playdate bersama UPgirls",
+    "type": "Event: Playdate",
+    "ticket_link": "https://forms.gle/5g3TfVhF5kuBzqp56",
+    "time": "TBA",
+    "location": "TBA",
+    "source": "X @theupgirls (May 8 post)"
+  },
+  {
+    "id": 57,
+    "date": "2026-04-01",
+    "name": "Q-Time Bersama UPgirls (April 2026)",
+    "type": "Sesi Bulanan",
+    "ticket_link": "https://forms.gle/NvbiBXBfyUxtDAfR6",
+    "time": "TBA",
+    "location": "Online / Virtual Room",
+    "source": "X @theupgirls"
+  },
+  {
+    "id": 58,
+    "date": "2026-03-01",
+    "name": "Q-Time Bersama UPgirls (Maret 2026)",
+    "type": "Sesi Bulanan",
+    "ticket_link": "https://forms.gle/E6yFCUyMtxxL7sk38",
+    "time": "TBA",
+    "location": "Online / Virtual Room",
+    "source": "X @theupgirls"
+  },
+  {
+    "id": 59,
+    "date": "2026-02-01",
+    "name": "Q-Time Bersama UPgirls (Februari 2026)",
+    "type": "Sesi Bulanan",
+    "ticket_link": "https://forms.gle/9WzUwnVXusHrKwR88",
+    "time": "TBA",
+    "location": "Online / Virtual Room",
+    "source": "X @theupgirls"
+  },
+  {
+    "id": 60,
+    "date": "2026-01-01",
+    "name": "Q-Time Bersama UPgirls (Januari 2026)",
+    "type": "Sesi Bulanan",
+    "ticket_link": "https://forms.gle/nAWFU7Fk3MebiH5o6",
+    "time": "TBA",
+    "location": "Online / Virtual Room",
+    "source": "X @theupgirls"
+  },
+  {
+    "id": 61,
+    "date": "2025-11-08",
+    "name": "Karaoke Bareng di Lotte Alley",
+    "type": "Event: Karaoke",
+    "ticket_link": "",
+    "time": "Sebelum Cafe Takeover",
+    "location": "Lotte Alley",
+    "source": "X @theupgirls"
+  },
+  {
+    "id": 62,
+    "date": "TBA",
+    "name": "Museum Date with UPgirls",
+    "type": "Event: Date",
+    "ticket_link": "",
+    "time": "TBA",
+    "location": "TBA",
+    "source": "X @theupgirls"
+  },
+  {
+    "id": 63,
+    "date": "TBA",
+    "name": "Glamping with UPgirls",
+    "type": "Event: Glamping",
+    "ticket_link": "https://forms.gle/1kLJFuB6prppwpno9",
+    "time": "TBA",
+    "location": "TBA",
+    "source": "X @theupgirls"
+  },
+  {
+    "id": 64,
+    "date": "2025-09-22",
+    "name": "Soirée Sip & Snap: Matcha & DIY Frame",
+    "type": "Live Streaming",
+    "ticket_link": "",
+    "time": "16.00 WIB",
+    "location": "IDN Live",
+    "source": "X @idn_app"
+  },
+  {
+    "id": 65,
+    "date": "TBA",
+    "name": "Jalan Sehat with UPgirls",
+    "type": "Event: Olahraga",
+    "ticket_link": "https://forms.gle/pT8LAQdUHNLWny9Q8",
+    "time": "TBA",
+    "location": "TBA",
+    "source": "X @theupgirls"
+  },
+  {
+    "id": 66,
+    "date": "TBA",
+    "name": "Minishow Special Halloween",
+    "type": "Event: Special Show",
+    "ticket_link": "https://forms.gle/WfHqUUXfraUbcGQf6",
+    "time": "TBA",
+    "location": "TBA",
+    "source": "X @theupgirls"
+  },
+  {
+    "id": 67,
+    "date": "TBA",
+    "name": "MeetUP & 2Shot Surabaya",
+    "type": "Event: MeetUP",
+    "ticket_link": "https://forms.gle/WZurdpyn2x77EPHW9",
+    "time": "TBA",
+    "location": "Surabaya",
+    "source": "X @theupgirls"
+  },
+  {
+    "id": 68,
+    "date": "TBA",
+    "name": "Cheki with UPgirls (JAPAN HYPE)",
+    "type": "Event: Cheki",
+    "ticket_link": "https://forms.gle/vMYJZBv6Tfz523dW7",
+    "time": "TBA",
+    "location": "JAPAN HYPE",
+    "source": "X @theupgirls"
+  },
+  {
+    "id": 69,
+    "date": "2025-08-17",
+    "name": "TUJUH BELASan bersama UPgirls",
+    "type": "Event: Independence Day",
+    "ticket_link": "",
+    "time": "TBA",
+    "location": "TBA",
+    "source": "X @theupgirls"
   }
 ]

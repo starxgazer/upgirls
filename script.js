@@ -165,6 +165,48 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => console.error('Error loading discography:', error));
     }
 
+    // Load tweets data
+    const tweetsContainer = document.getElementById('tweets-container');
+    if (tweetsContainer) {
+        fetch('x_tweets_updated.json')
+            .then(response => response.json())
+            .then(data => {
+                // Get latest 6 tweets
+                const latestTweets = data.slice(0, 6);
+                renderTweets(latestTweets);
+            })
+            .catch(error => console.error('Error loading tweets:', error));
+    }
+
+    function renderTweets(tweets) {
+        if (!tweetsContainer) return;
+        
+        tweetsContainer.innerHTML = '';
+        
+        tweets.forEach(tweet => {
+            const tweetCard = document.createElement('div');
+            tweetCard.className = 'tweet-card';
+            
+            const dateStr = tweet.date || 'Recent';
+            const text = tweet.text || '';
+            const url = tweet.url || 'https://x.com/theupgirls';
+            
+            tweetCard.innerHTML = `
+                <div class="tweet-header">
+                    <span class="tweet-date">${dateStr}</span>
+                </div>
+                <div class="tweet-body">
+                    <p>${text}</p>
+                </div>
+                <div class="tweet-footer">
+                    <a href="${url}" target="_blank" rel="noopener" class="tweet-link">View on X →</a>
+                </div>
+            `;
+            
+            tweetsContainer.appendChild(tweetCard);
+        });
+    }
+
     if (showsList) {
         fetch('shows.json')
             .then(response => response.json())

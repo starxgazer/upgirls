@@ -221,6 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isAllEventsPage) {
                     renderShows(allShows, true);
                     initCalendar();
+                    initEventTypeFilter();
                 } else {
                     const now = new Date();
                     const upcomingShows = allShows.filter(show => {
@@ -430,7 +431,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const year = displayDate.getFullYear();
 
             const showCard = document.createElement('div');
-            showCard.className = `show-card ${isPast ? 'past-event' : ''}`;
+            showCard.className = `show-card ${isPast ? 'past-event' : ''} ${show.event_type === 'audition' ? 'audition-card' : ''}`;
+            showCard.dataset.eventType = show.event_type || 'performance';
+            
+            const eventBadge = show.event_type === 'audition' ? '<span class="event-type-badge audition-badge">🎤 AUDITION</span>' : '';
             
             showCard.innerHTML = `
                 <div class="show-date-badge">
@@ -438,22 +442,46 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="month">${month}</span>
                     <span class="year">${year}</span>
                     ${isPast ? '<span class="status-badge">Finished</span>' : ''}
+                    ${!isPast && eventBadge ? eventBadge : ''}
                 </div>
                 <div class="show-info">
                     <h4 class="show-name">${show.name}</h4>
                     <p class="show-type">${show.type}</p>
+                    ${show.description ? `<p class="show-description">${show.description}</p>` : ''}
                     <div class="show-meta">
                         ${show.time ? `<span class="show-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>${show.time}</span>` : ''}
                         ${show.location ? `<span class="show-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:middle;margin-left:8px;margin-right:4px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>${show.location}</span>` : ''}
                     </div>
                     ${isPast ? 
                         '<span class="ticket-link disabled">Event Finished</span>' : 
-                        `<a href="${show.ticket_link}" class="ticket-link" ${show.ticket_link === '#' || !show.ticket_link ? 'style="opacity: 0.5; pointer-events: none;"' : ''} target="_blank" rel="noopener">${show.ticket_link === '#' || !show.ticket_link ? 'Ticket Link Unavailable' : 'Buy Tickets'}</a>`
+                        `<a href="${show.ticket_link}" class="ticket-link ${show.event_type === 'audition' ? 'audition-link' : ''}" ${show.ticket_link === '#' || !show.ticket_link ? 'style="opacity: 0.5; pointer-events: none;"' : ''} target="_blank" rel="noopener">${show.event_type === 'audition' ? 'Apply Now' : (show.ticket_link === '#' || !show.ticket_link ? 'Ticket Link Unavailable' : 'Buy Tickets')}</a>`
                     }
                 </div>
             `;
 
             showsList.appendChild(showCard);
+        });
+    }
+
+    function initEventTypeFilter() {
+        const eventTypeFilter = document.getElementById('event-type-filter');
+        if (!eventTypeFilter) return;
+
+        eventTypeFilter.addEventListener('change', function() {
+            const filterValue = this.value;
+            const showCards = document.querySelectorAll('.show-card');
+            
+            showCards.forEach(card => {
+                const eventType = card.dataset.eventType || 'performance';
+                
+                if (filterValue === 'all') {
+                    card.style.display = '';
+                } else if (filterValue === eventType) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
         });
     }
 

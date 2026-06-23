@@ -391,7 +391,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const now = new Date();
         
         // Sort shows by date (descending, newest first)
-        const sortedShows = [...shows].sort((a, b) => new Date(b.date) - new Date(a.date));
+        // TBA dates should go to the end
+        const sortedShows = [...shows].sort((a, b) => {
+            const dateA = a.date === 'TBA' ? new Date('9999-12-31') : new Date(a.date);
+            const dateB = b.date === 'TBA' ? new Date('9999-12-31') : new Date(b.date);
+            return dateB - dateA;
+        });
 
         if (sortedShows.length === 0) {
             showsList.innerHTML = '<p class="no-results">No upcoming shows scheduled at the moment. Check back soon!</p>';
@@ -399,36 +404,46 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         sortedShows.forEach(show => {
-            // Determine if event is past
+            // Handle TBA dates
+            const isTBA = show.date === 'TBA';
             let isPast = false;
-            const showDateOnly = new Date(show.date + 'T00:00:00');
-            const todayOnly = new Date();
-            todayOnly.setHours(0, 0, 0, 0);
+            let day, month, year;
+            
+            if (isTBA) {
+                day = 'TBA';
+                month = '';
+                year = '';
+            } else {
+                // Determine if event is past
+                const showDateOnly = new Date(show.date + 'T00:00:00');
+                const todayOnly = new Date();
+                todayOnly.setHours(0, 0, 0, 0);
 
-            if (showDateOnly < todayOnly) {
-                isPast = true;
-            } else if (showDateOnly.getTime() === todayOnly.getTime()) {
-                // It's today. Check the time if available.
-                // Time format example: "19.00–20.00 WIB"
-                if (show.time && show.time.includes('–')) {
-                    const endTimeStr = show.time.split('–')[1].split(' ')[0].replace('.', ':');
-                    const eventEndTime = new Date(show.date + 'T' + endTimeStr + ':00');
-                    if (eventEndTime < now) {
-                        isPast = true;
+                if (showDateOnly < todayOnly) {
+                    isPast = true;
+                } else if (showDateOnly.getTime() === todayOnly.getTime()) {
+                    // It's today. Check the time if available.
+                    // Time format example: "19.00–20.00 WIB"
+                    if (show.time && show.time.includes('–')) {
+                        const endTimeStr = show.time.split('–')[1].split(' ')[0].replace('.', ':');
+                        const eventEndTime = new Date(show.date + 'T' + endTimeStr + ':00');
+                        if (eventEndTime < now) {
+                            isPast = true;
+                        }
+                    } else {
+                        // No specific end time, keep active until end of day
+                        const endOfDay = new Date(show.date + 'T23:59:59');
+                        if (endOfDay < now) isPast = true;
                     }
-                } else {
-                    // No specific end time, keep active until end of day
-                    const endOfDay = new Date(show.date + 'T23:59:59');
-                    if (endOfDay < now) isPast = true;
                 }
+                
+                const displayDate = new Date(show.date + 'T12:00:00');
+                day = displayDate.getDate();
+                month = displayDate.toLocaleString('en-US', { month: 'short' });
+                year = displayDate.getFullYear();
             }
             
             if (!showPast && isPast) return;
-            
-            const displayDate = new Date(show.date + 'T12:00:00');
-            const day = displayDate.getDate();
-            const month = displayDate.toLocaleString('en-US', { month: 'short' });
-            const year = displayDate.getFullYear();
 
             const showCard = document.createElement('div');
             showCard.className = `show-card ${isPast ? 'past-event' : ''} ${show.event_type === 'audition' ? 'audition-card' : ''}`;
@@ -439,8 +454,8 @@ document.addEventListener('DOMContentLoaded', () => {
             showCard.innerHTML = `
                 <div class="show-date-badge">
                     <span class="day">${day}</span>
-                    <span class="month">${month}</span>
-                    <span class="year">${year}</span>
+                    ${month ? `<span class="month">${month}</span>` : ''}
+                    ${year ? `<span class="year">${year}</span>` : ''}
                     ${isPast ? '<span class="status-badge">Finished</span>' : ''}
                     ${!isPast && eventBadge ? eventBadge : ''}
                 </div>

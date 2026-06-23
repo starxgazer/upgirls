@@ -98,7 +98,7 @@ header nav ul li a.active {
 
 #about {
     text-align: center;
-    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('images/UPgirls_All_Member.jpg');
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://pbs.twimg.com/profile_banners/1613792521452400641/1781003642/1500x500');
     background-size: cover;
     background-position: center;
     color: var(--light-color);

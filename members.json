@@ -214,11 +214,11 @@
     "nationality": "Indonesian",
     "representative_emoji": "♠️",
     "image": "images/Kay.jpg",
-    "facts": "She was announced as a member on February 13, 2025.",
+    "facts": "She was announced as a member on February 13, 2025. She left the group on July 20, 2026 (official announcement).",
     "instagram": "upgirls.kay",
     "tiktok": "upgirls.kay",
     "idn_live": "UPgirls.kay",
-    "is_active": true,
+    "is_active": false,
     "batch": "Trainee"
   },
   {
@@ -314,11 +314,11 @@
     "nationality": "Indonesian",
     "representative_emoji": "🌹",
     "image": "images/Bea.jpg",
-    "facts": "She was announced as a member on February 18, 2025. Batch 3.",
+    "facts": "She was announced as a member on February 18, 2025. Batch 3. She left the group (confirmed no longer in official lineups as of October 2026 Showcase).",
     "instagram": "upgirls.bea",
     "tiktok": "upgirls.bea",
     "idn_live": "UPgirls.bea",
-    "is_active": true,
+    "is_active": false,
     "batch": "3"
   },
   {
@@ -354,11 +354,11 @@
     "nationality": "Indonesian",
     "representative_emoji": "🐝",
     "image": "images/Bee.jpg",
-    "facts": "She was announced as a member on February 25, 2025. Batch 3.",
+    "facts": "She was announced as a member on February 25, 2025. Batch 3. She was no longer appearing in official lineups as of October 2026 (Showcase 11 Oct).",
     "instagram": "upgirls.bee",
     "tiktok": "upgirls.bee",
     "idn_live": "UPgirls.bee",
-    "is_active": true,
+    "is_active": false,
     "batch": "3"
   },
   {
@@ -374,17 +374,17 @@
     "nationality": "Indonesian",
     "representative_emoji": "👑",
     "image": "images/Ane.jpg",
-    "facts": "She was announced as a member on November 12, 2024. Ane attended BPK PENABUR Bogor. Batch 2.",
+    "facts": "She was announced as a member on November 12, 2024. Ane attended BPK PENABUR Bogor. Batch 2. She graduated / left the group on October 9, 2026.",
     "instagram": "upgirls.ane",
     "tiktok": "upgirls_ane",
     "idn_live": "UPgirls.ane",
-    "is_active": true,
+    "is_active": false,
     "batch": "2"
   },
   {
     "name": "Yui",
     "full_name": "Kinaryuki Gaizka N.",
-    "position": "Trainee Member",
+    "position": "Member",
     "birth_date": "N/A",
     "birth_place": "N/A",
     "blood_type": "N/A",
@@ -399,12 +399,12 @@
     "tiktok": "upgirls.yui",
     "idn_live": "UPgirls.yui",
     "is_active": true,
-    "batch": "Trainee"
+    "batch": null
   },
   {
     "name": "Ela",
     "full_name": "Della Putri Ardiyani",
-    "position": "Trainee Member",
+    "position": "Member",
     "birth_date": "N/A",
     "birth_place": "N/A",
     "blood_type": "N/A",
@@ -414,17 +414,17 @@
     "nationality": "Indonesian",
     "representative_emoji": "🦢",
     "image": "images/Ela.jpg",
-    "facts": "She was announced as a member on November 16, 2025.",
+    "facts": "She was announced as a member on November 16, 2025. She left the group on July 20, 2026 (official announcement).",
     "instagram": "upgirls.ela",
     "tiktok": "upgirls.ela",
     "idn_live": "UPgirls.ela",
-    "is_active": true,
-    "batch": "Trainee"
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Kei",
     "full_name": "Audrey Keiko N.",
-    "position": "Trainee Member",
+    "position": "Member",
     "birth_date": "N/A",
     "birth_place": "N/A",
     "blood_type": "N/A",
@@ -434,17 +434,17 @@
     "nationality": "Indonesian",
     "representative_emoji": "🍒",
     "image": "images/Kei.png",
-    "facts": "She was announced as a member on November 16, 2025.",
+    "facts": "She was announced as a member on November 16, 2025. She left the group on July 20, 2026 (official announcement).",
     "instagram": "upgirls.kei",
     "tiktok": "upgirls.kei",
     "idn_live": "UPgirls.kei",
-    "is_active": true,
-    "batch": "Trainee"
+    "is_active": false,
+    "batch": null
   },
   {
     "name": "Dea",
     "full_name": "Syahla Dena S.",
-    "position": "Trainee Member",
+    "position": "Member",
     "birth_date": "N/A",
     "birth_place": "N/A",
     "blood_type": "N/A",
@@ -459,7 +459,7 @@
     "tiktok": "upgirls.dea",
     "idn_live": "UPgirls.dea",
     "is_active": true,
-    "batch": "Trainee"
+    "batch": null
   },
   {
     "name": "Rea",
@@ -844,8 +844,8 @@
   },
   {
     "name": "Jen",
-    "full_name": "N/A",
-    "position": "Trainee Member",
+    "full_name": "Jennyfer Valencia",
+    "position": "Member",
     "birth_date": "N/A",
     "birth_place": "N/A",
     "blood_type": "N/A",
@@ -860,6 +860,6 @@
     "tiktok": "upgirls.jen",
     "idn_live": "UPgirls.jen",
     "is_active": true,
-    "batch": "Trainee"
+    "batch": null
   }
 ]

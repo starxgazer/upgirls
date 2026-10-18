@@ -1,5 +1,16 @@
 [
   {
+    "id": 70,
+    "date": "2026-10-11",
+    "name": "The UPgirls Showcase",
+    "event_type": "performance",
+    "type": "Showcase",
+    "ticket_link": "",
+    "time": "14:00 WIB",
+    "location": "Lotte Alley, Lotte Mall Jakarta, Jakarta Selatan",
+    "source": "Poster resmi @theupgirls"
+  },
+  {
     "id": 0,
     "date": "2026-06-30",
     "name": "New Batch Audition - Join UPgirls!",

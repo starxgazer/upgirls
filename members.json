@@ -399,7 +399,7 @@
     "tiktok": "upgirls.yui",
     "idn_live": "UPgirls.yui",
     "is_active": true,
-    "batch": null
+    "batch": "4"
   },
   {
     "name": "Ela",
@@ -459,7 +459,7 @@
     "tiktok": "upgirls.dea",
     "idn_live": "UPgirls.dea",
     "is_active": true,
-    "batch": null
+    "batch": "4"
   },
   {
     "name": "Rea",
@@ -860,6 +860,6 @@
     "tiktok": "upgirls.jen",
     "idn_live": "UPgirls.jen",
     "is_active": true,
-    "batch": null
+    "batch": "4"
   }
 ]

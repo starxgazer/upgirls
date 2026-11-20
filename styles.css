@@ -842,6 +842,11 @@ footer a {
     color: #00f2ea; /* accent cyan shows via currentColor in the path fill */
 }
 
+.social-links.pretty .social.twitter {
+    background: #000;
+    outline: 1px solid rgba(255,255,255,0.08);
+}
+
 .social-links.pretty .social.youtube {
     background: #ff0000;
 }

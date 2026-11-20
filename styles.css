@@ -1785,3 +1785,15 @@ footer a {
 .calendar-day.past-event.selected .event-dot {
     background: #fff;
 }
+
+/* Home page: fixed header (space is reserved in script.js) so its shrinking never shifts the page */
+body:not(.subpage) header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+html {
+    scroll-padding-top: 90px;
+}

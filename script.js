@@ -404,11 +404,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // On the home page the header is fixed and shrinks while scrolling. Reserve its full-size height
+    // up front so shrinking never moves the content (which used to make the header flicker near the top).
+    function reserveHeaderSpace() {
+        if (!header || isSubpage) return;
+        const wasScrolled = header.classList.contains('scrolled');
+        header.style.transition = 'none';
+        header.classList.remove('scrolled');
+        document.body.style.paddingTop = header.offsetHeight + 'px';
+        header.classList.toggle('scrolled', wasScrolled);
+        header.offsetHeight; // apply the state change before transitions come back
+        header.style.transition = '';
+    }
+
     if (header) {
+        reserveHeaderSpace();
+        window.addEventListener('resize', reserveHeaderSpace);
+        window.addEventListener('load', reserveHeaderSpace);
         window.addEventListener('scroll', () => {
             header.classList.toggle('scrolled', window.scrollY > 50);
             highlightNav();
         }, { passive: true });
+        header.classList.toggle('scrolled', window.scrollY > 50);
         highlightNav();
     }
 

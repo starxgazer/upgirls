@@ -1,14 +1,25 @@
 [
   {
+    "id": 72,
+    "date": "2026-08-17",
+    "name": "MeetUP with THE UPgirls",
+    "event_type": "performance",
+    "type": "Event: MeetUP",
+    "ticket_link": "",
+    "time": "17:00 WIB",
+    "location": "Ice Palace 4F, Lotte Shopping Avenue, Kuningan, Jakarta",
+    "source": "Poster resmi @theupgirls"
+  },
+  {
     "id": 71,
     "date": "2026-06-27",
-    "name": "Lotte Mall Jakarta 13th Anniversary - Beyond The Years",
+    "name": "Shop Nite Out - Lotte Mall 13th Anniversary",
     "event_type": "performance",
-    "type": "Anniversary Performance",
+    "type": "Special Performance",
     "ticket_link": "",
-    "time": "TBA",
+    "time": "Open until 23:00 WIB",
     "location": "Lotte Mall Jakarta",
-    "source": "Instagram @lottemall_jkt"
+    "source": "Poster @lottemall_jkt"
   },
   {
     "id": 70,
@@ -591,14 +602,14 @@
   },
   {
     "id": 56,
-    "date": "TBA",
-    "name": "Playdate bersama UPgirls",
+    "date": "2026-05-10",
+    "name": "Playdate with UPgirls",
     "event_type": "performance",
     "type": "Event: Playdate",
     "ticket_link": "https://forms.gle/5g3TfVhF5kuBzqp56",
-    "time": "TBA",
-    "location": "TBA",
-    "source": "X @theupgirls (May 8 post)"
+    "time": "08:30 WIB",
+    "location": "Taman Mini Indonesia Indah (meeting point akan diberitahukan)",
+    "source": "Poster resmi @theupgirls"
   },
   {
     "id": 57,
@@ -657,24 +668,24 @@
   },
   {
     "id": 62,
-    "date": "TBA",
+    "date": "2025-11-02",
     "name": "Museum Date with UPgirls",
     "event_type": "performance",
     "type": "Event: Date",
     "ticket_link": "",
     "time": "TBA",
     "location": "TBA",
-    "source": "X @theupgirls"
+    "source": "Tweet @sunshinism 8 Nov 2025; lineup @theupgirls 31 Okt 2025"
   },
   {
     "id": 63,
-    "date": "TBA",
+    "date": "2025-11-28",
     "name": "Glamping with UPgirls",
     "event_type": "performance",
     "type": "Event: Glamping",
     "ticket_link": "https://forms.gle/1kLJFuB6prppwpno9",
-    "time": "TBA",
-    "location": "TBA",
+    "time": "Jum'at - Sabtu, 28-29 November 2025",
+    "location": "Puncak, Bogor",
     "source": "X @theupgirls"
   },
   {
@@ -690,47 +701,48 @@
   },
   {
     "id": 65,
-    "date": "TBA",
+    "date": "2025-09-21",
     "name": "Jalan Sehat with UPgirls",
     "event_type": "performance",
     "type": "Event: Olahraga",
     "ticket_link": "https://forms.gle/pT8LAQdUHNLWny9Q8",
     "time": "TBA",
     "location": "TBA",
-    "source": "X @theupgirls"
+    "source": "Tweet @theupgirls 19 & 21 Sep 2025"
   },
   {
     "id": 66,
-    "date": "TBA",
-    "name": "Minishow Special Halloween",
+    "date": "2026-11-01",
+    "name": "Minishow Halloween Edition",
     "event_type": "performance",
-    "type": "Event: Special Show",
-    "ticket_link": "https://forms.gle/WfHqUUXfraUbcGQf6",
-    "time": "TBA",
-    "location": "TBA",
-    "source": "X @theupgirls"
+    "type": "HOT SEAT (150K) / REGULAR (100K)",
+    "ticket_link": "https://forms.gle/cBf7jFZeTDfa2V4B7",
+    "time": "15:00 WIB",
+    "location": "Ice Palace 4F, Lotte Mall Kuningan",
+    "source": "Poster resmi @theupgirls; tweet 22 Okt 2026"
   },
   {
     "id": 67,
-    "date": "TBA",
-    "name": "MeetUP & 2Shot Surabaya",
+    "date": "2025-10-05",
+    "name": "MeetUP with UPgirls Surabaya",
     "event_type": "performance",
     "type": "Event: MeetUP",
-    "ticket_link": "https://forms.gle/WZurdpyn2x77EPHW9",
+    "ticket_link": "https://forms.gle/XgM8HZVJ1UD2NgM68",
     "time": "TBA",
-    "location": "Surabaya",
-    "source": "X @theupgirls"
+    "location": "Bicopis, Jl. Dr. Ir. H. Soekarno (MERR) No.678, Gn. Anyar, Surabaya",
+    "source": "Tweet @theupgirls 29 Sep, 4 & 5 Okt 2025"
   },
   {
     "id": 68,
-    "date": "TBA",
+    "date": "2025-10-04",
     "name": "Cheki with UPgirls (JAPAN HYPE)",
     "event_type": "performance",
     "type": "Event: Cheki",
     "ticket_link": "https://forms.gle/vMYJZBv6Tfz523dW7",
-    "time": "TBA",
-    "location": "JAPAN HYPE",
-    "source": "X @theupgirls"
+    "time": "Cheki 19:30 WIB, Performance 20:30 WIB",
+    "location": "JAPAN HYPE, Royal Plaza Surabaya",
+    "source": "Poster @royalplazasurabaya; tweet @theupgirls 30 Sep & 4 Okt 2025",
+    "description": "Cheki Session di Japanese Food Bazaar Area (Fushimi District); UPgirls Performance di Atrium Utama (Shibuya District). JAPAN HYPE berlangsung 26 September - 5 Oktober 2025."
   },
   {
     "id": 69,
@@ -742,5 +754,16 @@
     "time": "TBA",
     "location": "TBA",
     "source": "X @theupgirls"
+  },
+  {
+    "id": 73,
+    "date": "2024-07-13",
+    "name": "Playdate with the UPgirls",
+    "event_type": "performance",
+    "type": "HTM 100K",
+    "ticket_link": "",
+    "time": "10:00 WIB",
+    "location": "To Be Announced",
+    "source": "Poster resmi @theupgirls"
   }
 ]

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://starxgazer.github.io/upgirls/sitemap.xml

@@ -12,6 +12,8 @@
     <meta property="og:description" content="Fan site tidak resmi UPgirls, girl group Indonesia di bawah Up Management. Profil member, jadwal event, dan diskografi. Fandom: UpTown.">
     <meta property="og:url" content="https://starxgazer.github.io/upgirls/">
     <meta property="og:image" content="https://starxgazer.github.io/upgirls/images/UPgirls_All_Member.jpg">
+    <link rel="icon" href="images/UPgirls_Logo.jpg">
+    <script>try{var t=localStorage.getItem('theme');if(t){document.documentElement.dataset.theme=t}else if(window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.dataset.theme='dark'}}catch(e){}</script>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,6 +29,7 @@
                 <ul>
                     <li><a href="#about">About</a></li>
                     <li><a href="#shows">Events</a></li>
+                    <li><a href="#updates">Updates</a></li>
                     <li><a href="#members">Members</a></li>
                     <li><a href="#discography">Discography</a></li>
                     <li><a href="#social">Social</a></li>
@@ -46,11 +49,23 @@
 
         <section id="shows" class="container">
             <h3>Events</h3>
+            <div id="next-event" class="next-event" style="display: none;" aria-live="polite"></div>
+            <p id="shows-note" class="section-subtitle"></p>
             <div id="shows-list" class="shows-grid">
                 <!-- Shows will be loaded here via JS -->
             </div>
             <div class="shows-view-all">
                 <a href="all-events.html" class="view-all-link">View All Events</a>
+            </div>
+        </section>
+
+        <section id="updates" class="container">
+            <h3>Latest Updates</h3>
+            <div id="tweets-container" class="tweets-grid">
+                <!-- Latest posts will be loaded here via JS -->
+            </div>
+            <div class="shows-view-all">
+                <a href="https://x.com/theupgirls" class="view-all-link" target="_blank" rel="noopener">Follow on X</a>
             </div>
         </section>
 

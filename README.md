@@ -11,6 +11,13 @@ Live site: https://starxgazer.github.io/upgirls/
 
 Plain static site: HTML, CSS, and vanilla JavaScript. No build step, no dependencies. Hosted on GitHub Pages.
 
+## Features
+
+- Event list with a live countdown to the next event, plus per-event **Add to Calendar** (`.ics`)
+- Event archive with search, year/month/status/type filters, and a clickable calendar
+- Latest posts from the group's X account
+- Member profiles, discography with lyrics, dark mode (follows the system, toggle in the header)
+
 ## Structure
 
 | File | Purpose |
@@ -23,6 +30,7 @@ Plain static site: HTML, CSS, and vanilla JavaScript. No build step, no dependen
 | `script.js` | All page logic; loads the JSON files below with `fetch` |
 | `styles.css` | Styles |
 | `images/` | Member photos and logo |
+| `sitemap.xml`, `robots.txt` | SEO. Regenerate the sitemap with `python3 generate_sitemap.py` |
 
 ## Data
 
@@ -35,7 +43,9 @@ All content lives in JSON files. Edit these to update the site.
 
 Notes:
 - Keep each `id` unique in `shows.json` and `discography.json`.
-- The home page only lists events that are not over yet. Past events appear on `all-events.html`.
+- The home page only lists events that are not over yet (or the 3 most recent if none). Everything else is on `all-events.html`.
+- `time` is read as WIB (UTC+7). Use `HH:MM`, or `HH:MM-HH:MM` for a range, so the countdown and `.ics` file get the right time.
+- Run `python3 generate_sitemap.py` after adding members or songs.
 
 ## Run locally
 

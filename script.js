@@ -1,50 +1,390 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const activeGrid = document.getElementById('active-members-grid');
-    const traineeGrid = document.getElementById('trainee-members-grid');
-    const formerGrid = document.getElementById('former-members-grid');
-    const searchInput = document.getElementById('member-search');
-    const statusFilter = document.getElementById('status-filter');
-    const batchFilter = document.getElementById('batch-filter');
-    const sortOrder = document.getElementById('sort-order');
-    const activeSection = document.getElementById('active-members-section');
-    const formerSection = document.getElementById('former-members-section');
-    const noResults = document.getElementById('no-results');
-    const discographyList = document.getElementById('discography-list');
-    const songSearchInput = document.getElementById('song-search');
-    const artistFilter = document.getElementById('artist-filter');
-    const songSortOrder = document.getElementById('song-sort-order');
-    const noSongsResults = document.getElementById('no-songs-results');
-    const showsList = document.getElementById('shows-list');
-    const toggleFormerMembersBtn = document.getElementById('toggle-former-members');
-    const currentYearSpan = document.getElementById('current-year');
+/* =========================================================
+   UPgirls Fan Site
+   Shared helpers, then page logic. Data lives in the *.json files.
+   ========================================================= */
 
-    // Update current year in footer
-    if (currentYearSpan) {
-        currentYearSpan.textContent = new Date().getFullYear();
+/* ---------- Helpers ---------- */
+
+const ESC_MAP = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ESC_MAP[c]);
+
+// Only allow http(s) links coming from data files.
+function safeUrl(u) {
+    try {
+        const url = new URL(u, window.location.href);
+        return ['http:', 'https:'].includes(url.protocol) ? url.href : '#';
+    } catch (e) {
+        return '#';
     }
+}
+
+// Local placeholder (no external service), used when a member photo is missing or broken.
+function placeholderImg(name) {
+    const letter = esc(String(name || '?').charAt(0).toUpperCase());
+    const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='300' height='400'><rect width='100%' height='100%' fill='#ffd6e0'/><text x='50%' y='50%' font-family='sans-serif' font-size='120' fill='#ff69b4' text-anchor='middle' dominant-baseline='central'>${letter}</text></svg>`;
+    return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+
+// Swap in the placeholder if an image fails to load.
+document.addEventListener('error', e => {
+    const img = e.target;
+    if (img && img.tagName === 'IMG' && img.dataset.fallback && !img.dataset.fellBack) {
+        img.dataset.fellBack = '1';
+        img.src = img.dataset.fallback;
+    }
+}, true);
+
+function fetchJSON(url) {
+    return fetch(url).then(r => {
+        if (!r.ok) throw new Error(`${url}: ${r.status}`);
+        return r.json();
+    });
+}
+
+function setMeta(name, content, attr = 'name') {
+    if (!content) return;
+    let el = document.head.querySelector(`meta[${attr}="${name}"]`);
+    if (!el) {
+        el = document.createElement('meta');
+        el.setAttribute(attr, name);
+        document.head.appendChild(el);
+    }
+    el.setAttribute('content', content);
+}
+
+function setPageMeta(title, description) {
+    if (title) {
+        document.title = title;
+        setMeta('og:title', title, 'property');
+    }
+    if (description) {
+        setMeta('description', description);
+        setMeta('og:description', description, 'property');
+    }
+    setMeta('og:url', window.location.href, 'property');
+}
+
+const SVG_PATHS = {
+    spotify: 'M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.306c-.221.362-.693.475-1.054.254-2.894-1.768-6.536-2.167-10.824-1.185-.413.095-.826-.164-.922-.577-.095-.413.164-.826.577-.922 4.697-1.073 8.71-.611 11.968 1.381.363.221.476.693.255 1.049zm1.467-3.267c-.278.452-.871.597-1.323.32-3.31-2.036-8.358-2.623-12.273-1.434-.51.155-1.044-.136-1.199-.646-.155-.51.136-1.044.646-1.199 4.47-1.356 10.033-.705 13.829 1.623.453.277.597.871.32 1.336zm.126-3.414C15.228 8.243 8.85 8.03 5.158 9.151c-.596.181-1.23-.153-1.411-.749-.181-.596.153-1.23.749-1.411 4.238-1.286 11.284-1.046 15.748 1.605.536.319.712 1.011.393 1.547-.319.535-1.011.712-1.547.393z',
+    youtubeMusic: 'M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 17.022c-2.774 0-5.022-2.248-5.022-5.022S9.226 6.978 12 6.978s5.022 2.248 5.022 5.022-2.248 5.022-5.022 5.022z',
+    youtubeVideo: 'M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z'
+};
+
+const SERVICES = [
+    { key: 'spotify', field: 'spotify', label: 'Spotify', cls: 'spotify', path: SVG_PATHS.spotify },
+    { key: 'youtubeMusic', field: 'youtube_music', label: 'YouTube Music', cls: 'youtube-music', path: SVG_PATHS.youtubeMusic },
+    { key: 'youtubeVideo', field: 'youtube_video', label: 'YouTube Video', cls: 'youtube-video', path: SVG_PATHS.youtubeVideo }
+];
+
+function songLinksHTML(song, variant) {
+    return SERVICES.filter(s => song[s.field]).map(s => {
+        const svg = (variant === 'button')
+            ? `<svg viewBox="0 0 24 24" fill="currentColor" class="btn-icon"><path d="${s.path}"/></svg>`
+            : `<svg viewBox="0 0 24 24" fill="currentColor"><path d="${s.path}"/></svg>`;
+        const href = esc(safeUrl(song[s.field]));
+        if (variant === 'button') {
+            return `<a href="${href}" target="_blank" rel="noopener" class="streaming-btn ${s.cls}">${svg}${s.label}</a>`;
+        }
+        return `<a href="${href}" target="_blank" rel="noopener" title="${s.label}" class="song-icon ${s.cls}">${svg}</a>`;
+    }).join('');
+}
+
+function songRowElement(song, index, showYear) {
+    const row = document.createElement('div');
+    row.className = 'song-row clickable';
+    row.onclick = e => {
+        if (e.target.closest('.song-links-inline')) return;
+        window.location.href = `song.html?id=${encodeURIComponent(song.id)}`;
+    };
+    row.innerHTML = `
+        <div class="song-index">${index + 1}</div>
+        <div class="song-info">
+            <div class="song-title">${esc(song.title)}</div>
+            <div class="song-artist">${esc(song.artist)} ${showYear && song.release_year ? `<span class="song-year-inline">(${esc(song.release_year)})</span>` : ''}</div>
+        </div>
+        <div class="song-links-inline">${songLinksHTML(song, 'inline')}</div>
+    `;
+    return row;
+}
+
+/* ---------- Event date helpers ---------- */
+
+const isTBA = show => !/^\d{4}-\d{2}-\d{2}$/.test(show.date || '');
+
+// Reads "14:00 WIB", "19.00-20.00 WIB", "07:00 WIB - selesai". Returns { start, end } as "HH:MM" or null.
+function parseTimes(time) {
+    if (!time || /until|sampai|deadline/i.test(time)) return null;
+    const found = [...String(time).matchAll(/(\d{1,2})[.:](\d{2})/g)]
+        .map(m => `${m[1].padStart(2, '0')}:${m[2]}`);
+    if (!found.length) return null;
+    return { start: found[0], end: found.length > 1 ? found[found.length - 1] : null };
+}
+
+// An event is over once its end time (or the end of its day) has passed. TBA events are never over.
+function isPastShow(show, now = new Date()) {
+    if (isTBA(show)) return false;
+    const t = parseTimes(show.time);
+    const endStr = (t && t.end) ? t.end + ':00' : '23:59:59';
+    return new Date(`${show.date}T${endStr}`) < now;
+}
+
+// Start of an event in WIB (UTC+7), the time zone used on all posters.
+function showStart(show) {
+    const t = parseTimes(show.time);
+    return new Date(`${show.date}T${t ? t.start : '00:00'}:00+07:00`);
+}
+
+function showDateParts(show) {
+    const d = new Date(show.date + 'T12:00:00');
+    return {
+        day: d.getDate(),
+        month: d.toLocaleString('en-US', { month: 'short' }),
+        year: d.getFullYear()
+    };
+}
+
+const byDateAsc = (a, b) => {
+    if (isTBA(a) !== isTBA(b)) return isTBA(a) ? 1 : -1;
+    return String(a.date).localeCompare(String(b.date));
+};
+const byDateDesc = (a, b) => {
+    if (isTBA(a) !== isTBA(b)) return isTBA(a) ? 1 : -1;
+    return String(b.date).localeCompare(String(a.date));
+};
+
+/* ---------- Add to calendar (.ics) ---------- */
+
+function icsEscape(s) {
+    return String(s ?? '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+}
+
+function icsStamp(d) {
+    return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+}
+
+function buildICS(show) {
+    const t = parseTimes(show.time);
+    const lines = [
+        'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//UPgirls Fan Site//EN', 'CALSCALE:GREGORIAN',
+        'BEGIN:VEVENT',
+        `UID:upgirls-${show.id}@starxgazer.github.io`,
+        `DTSTAMP:${icsStamp(new Date())}`
+    ];
+    if (t) {
+        const start = showStart(show);
+        let end = t.end ? new Date(`${show.date}T${t.end}:00+07:00`) : new Date(start.getTime() + 2 * 3600 * 1000);
+        if (end <= start) end = new Date(start.getTime() + 2 * 3600 * 1000);
+        lines.push(`DTSTART:${icsStamp(start)}`, `DTEND:${icsStamp(end)}`);
+    } else {
+        const next = new Date(show.date + 'T00:00:00Z');
+        next.setUTCDate(next.getUTCDate() + 1);
+        lines.push(`DTSTART;VALUE=DATE:${show.date.replace(/-/g, '')}`,
+                   `DTEND;VALUE=DATE:${next.toISOString().slice(0, 10).replace(/-/g, '')}`);
+    }
+    lines.push(`SUMMARY:${icsEscape(show.name)}`);
+    if (show.location && show.location !== 'TBA') lines.push(`LOCATION:${icsEscape(show.location)}`);
+    const desc = [show.type, show.description, show.ticket_link].filter(Boolean).join('\n');
+    if (desc) lines.push(`DESCRIPTION:${icsEscape(desc)}`);
+    lines.push('END:VEVENT', 'END:VCALENDAR');
+    return lines.join('\r\n');
+}
+
+function downloadICS(show) {
+    const blob = new Blob([buildICS(show)], { type: 'text/calendar;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${show.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'event'}-${show.date}.ics`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+/* ---------- Event cards ---------- */
+
+const CLOCK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="meta-icon"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>';
+const PIN_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="meta-icon"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>';
+
+function createShowCard(show, now = new Date()) {
+    const tba = isTBA(show);
+    const past = isPastShow(show, now);
+    const audition = show.event_type === 'audition';
+    const parts = tba ? { day: 'TBA', month: '', year: '' } : showDateParts(show);
+
+    const card = document.createElement('div');
+    card.className = `show-card ${past ? 'past-event' : ''} ${audition ? 'audition-card' : ''}`;
+    card.dataset.eventType = show.event_type || 'performance';
+    card.dataset.id = show.id;
+    card.dataset.date = show.date;
+
+    const hasTicket = show.ticket_link && show.ticket_link !== '#';
+    let action;
+    if (past) {
+        action = '<span class="ticket-link disabled">Event Finished</span>';
+    } else if (hasTicket) {
+        action = `<a href="${esc(safeUrl(show.ticket_link))}" class="ticket-link ${audition ? 'audition-link' : ''}" target="_blank" rel="noopener">${audition ? 'Apply Now' : 'Buy Tickets'}</a>`;
+    } else {
+        action = `<span class="ticket-link disabled">${audition ? 'Apply Link Unavailable' : 'Ticket Link Unavailable'}</span>`;
+    }
+    const calendarBtn = (!past && !tba) ? `<button type="button" class="calendar-btn" data-id="${esc(show.id)}">+ Add to Calendar</button>` : '';
+
+    card.innerHTML = `
+        <div class="show-date-badge">
+            <span class="day">${esc(parts.day)}</span>
+            ${parts.month ? `<span class="month">${esc(parts.month)}</span>` : ''}
+            ${parts.year ? `<span class="year">${esc(parts.year)}</span>` : ''}
+            ${past ? '<span class="status-badge">Finished</span>' : ''}
+            ${!past && audition ? '<span class="event-type-badge audition-badge">🎤 AUDITION</span>' : ''}
+        </div>
+        <div class="show-info">
+            <h4 class="show-name">${esc(show.name)}</h4>
+            <p class="show-type">${esc(show.type)}</p>
+            ${show.description ? `<p class="show-description">${esc(show.description)}</p>` : ''}
+            <div class="show-meta">
+                ${show.time ? `<span class="show-time">${CLOCK_SVG}${esc(show.time)}</span>` : ''}
+                ${show.location ? `<span class="show-location">${PIN_SVG}${esc(show.location)}</span>` : ''}
+            </div>
+            <div class="show-actions">${action}${calendarBtn}</div>
+        </div>
+    `;
+    return card;
+}
+
+function renderShowCards(container, shows) {
+    container.innerHTML = '';
+    const now = new Date();
+    const frag = document.createDocumentFragment();
+    shows.forEach(show => frag.appendChild(createShowCard(show, now)));
+    container.appendChild(frag);
+}
+
+// One click handler for every "Add to Calendar" button on the page.
+function bindCalendarButtons(getShows) {
+    document.addEventListener('click', e => {
+        const btn = e.target.closest('.calendar-btn');
+        if (!btn) return;
+        const show = getShows().find(s => String(s.id) === btn.dataset.id);
+        if (show) downloadICS(show);
+    });
+}
+
+/* ---------- Countdown to next event ---------- */
+
+function startCountdown(show, el) {
+    const render = () => {
+        const diff = showStart(show) - new Date();
+        let when;
+        if (diff <= 0) {
+            when = 'Happening today!';
+        } else {
+            const mins = Math.floor(diff / 60000);
+            const d = Math.floor(mins / 1440);
+            const h = Math.floor((mins % 1440) / 60);
+            const m = mins % 60;
+            when = d > 0 ? `Starts in ${d}d ${h}h ${m}m` : `Starts in ${h}h ${m}m`;
+        }
+        el.innerHTML = `<span class="next-label">Next event</span> <strong>${esc(show.name)}</strong> <span class="next-when">${esc(when)}</span>`;
+    };
+    el.style.display = 'block';
+    render();
+    setInterval(render, 60000);
+}
+
+/* ---------- Theme (dark mode) ---------- */
+
+function initThemeToggle() {
+    const header = document.querySelector('header');
+    if (!header) return;
+    const root = document.documentElement;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'theme-toggle';
+    const sync = () => {
+        const dark = root.dataset.theme === 'dark';
+        btn.textContent = dark ? '☀️' : '🌙';
+        btn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+        btn.title = btn.getAttribute('aria-label');
+    };
+    btn.addEventListener('click', () => {
+        root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+        try { localStorage.setItem('theme', root.dataset.theme); } catch (e) { /* storage unavailable */ }
+        sync();
+    });
+    sync();
+    header.appendChild(btn);
+}
+
+/* ---------- Tweets ---------- */
+
+function linkify(text) {
+    return esc(text).replace(/\b((?:https?:\/\/|forms\.gle\/|bit\.ly\/)[^\s<]*[^\s<.,…!?])(?!…)/g, (m, u) => {
+        const href = /^https?:/.test(u) ? u : 'https://' + u;
+        return `<a href="${esc(safeUrl(href.replace(/&amp;/g, '&')))}" target="_blank" rel="noopener">${u}</a>`;
+    });
+}
+
+function renderTweets(container, tweets) {
+    container.innerHTML = '';
+    tweets.forEach(tweet => {
+        const card = document.createElement('div');
+        card.className = 'tweet-card';
+        card.innerHTML = `
+            <div class="tweet-header"><span class="tweet-date">${esc(tweet.date || 'Recent')}</span></div>
+            <div class="tweet-body"><p>${linkify(tweet.text || '')}</p></div>
+            <div class="tweet-footer"><a href="${esc(safeUrl(tweet.url || 'https://x.com/theupgirls'))}" target="_blank" rel="noopener" class="tweet-link">View on X →</a></div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+/* =========================================================
+   Page logic
+   ========================================================= */
+
+document.addEventListener('DOMContentLoaded', () => {
+    const $ = id => document.getElementById(id);
+    const isSubpage = document.body.classList.contains('subpage');
+
+    const activeGrid = $('active-members-grid');
+    const traineeGrid = $('trainee-members-grid');
+    const formerGrid = $('former-members-grid');
+    const searchInput = $('member-search');
+    const statusFilter = $('status-filter');
+    const batchFilter = $('batch-filter');
+    const sortOrder = $('sort-order');
+    const activeSection = $('active-members-section');
+    const formerSection = $('former-members-section');
+    const noResults = $('no-results');
+    const discographyList = $('discography-list');
+    const songSearchInput = $('song-search');
+    const artistFilter = $('artist-filter');
+    const songSortOrder = $('song-sort-order');
+    const noSongsResults = $('no-songs-results');
+    const showsList = $('shows-list');
+    const toggleFormerMembersBtn = $('toggle-former-members');
+    const currentYearSpan = $('current-year');
+    const tweetsContainer = $('tweets-container');
 
     let allMembers = [];
     let allSongs = [];
     let allShows = [];
 
-    // Handle header scroll effect and navigation highlight
+    if (currentYearSpan) currentYearSpan.textContent = new Date().getFullYear();
+    initThemeToggle();
+
+    /* ----- Header scroll + nav highlight ----- */
+
     const header = document.querySelector('header');
     const navLinks = document.querySelectorAll('header nav ul li a');
     const sections = document.querySelectorAll('main section');
 
     function highlightNav() {
         let currentSectionId = '';
-        const scrollPos = window.scrollY + 150; // Offset for header height
-
-        // If on a subpage, identify current page from path
-        const isSubpage = document.body.classList.contains('subpage');
+        const scrollPos = window.scrollY + 150;
         const currentPath = window.location.pathname;
 
         sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.offsetHeight;
-
-            if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+            if (scrollPos >= section.offsetTop && scrollPos < section.offsetTop + section.offsetHeight) {
                 currentSectionId = section.getAttribute('id');
             }
         });
@@ -52,27 +392,12 @@ document.addEventListener('DOMContentLoaded', () => {
         navLinks.forEach(link => {
             link.classList.remove('active');
             const href = link.getAttribute('href');
-            
-            // Check if it's the current section on home page OR if it's the current subpage
-            if ((!isSubpage && href === `#${currentSectionId}`) || 
-                (isSubpage && currentPath.includes(href))) {
+            if ((!isSubpage && href === `#${currentSectionId}`) || (isSubpage && currentPath.includes(href))) {
                 link.classList.add('active');
-                
-                // Scroll the active menu item to the center of the navigation bar
                 const navUl = document.querySelector('header nav ul');
                 if (navUl && window.innerWidth <= 768) {
-                    const activeLi = link.parentElement;
-                    const containerWidth = navUl.offsetWidth;
-                    const itemLeft = activeLi.offsetLeft;
-                    const itemWidth = activeLi.offsetWidth;
-                    
-                    // Calculate the scroll position to center the item
-                    const targetScrollPos = itemLeft - (containerWidth / 2) + (itemWidth / 2);
-                    
-                    navUl.scrollTo({
-                        left: targetScrollPos,
-                        behavior: 'smooth'
-                    });
+                    const li = link.parentElement;
+                    navUl.scrollTo({ left: li.offsetLeft - navUl.offsetWidth / 2 + li.offsetWidth / 2, behavior: 'smooth' });
                 }
             }
         });
@@ -80,878 +405,541 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (header) {
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
+            header.classList.toggle('scrolled', window.scrollY > 50);
             highlightNav();
-        });
-        // Initial check on load
+        }, { passive: true });
         highlightNav();
     }
 
+    /* ----- Members ----- */
+
+    function createMemberCard(member) {
+        const card = document.createElement('div');
+        card.className = 'card clickable';
+        card.tabIndex = 0;
+        card.setAttribute('role', 'link');
+        const go = () => { window.location.href = `member.html?name=${encodeURIComponent(member.name)}`; };
+        card.onclick = go;
+        card.onkeydown = e => { if (e.key === 'Enter') go(); };
+
+        const fallback = placeholderImg(member.name);
+        card.innerHTML = `
+            <div class="member-img-wrapper">
+                <img src="${esc(member.image || fallback)}" data-fallback="${esc(fallback)}" alt="${esc(member.name)}" loading="lazy" decoding="async" class="member-thumb ${member.is_active ? '' : 'former-img'}">
+            </div>
+            <div class="member-card-info"><h4>${esc(member.name)}</h4></div>
+        `;
+        return card;
+    }
+
+    const isRegular = m => m.is_active && !String(m.position || '').includes('Trainee');
+    const isTrainee = m => m.is_active && String(m.position || '').includes('Trainee');
+
+    function renderMembers() {
+        const archive = !!document.querySelector('#members-archive');
+        const searchTerm = (searchInput && searchInput.value) ? searchInput.value.toLowerCase() : '';
+        const statusValue = statusFilter ? statusFilter.value : (archive ? 'all' : 'active');
+        const batchValue = batchFilter ? batchFilter.value : 'all';
+        const sortValue = sortOrder ? sortOrder.value : 'asc';
+
+        const filtered = allMembers.filter(member => {
+            const matchesSearch = member.name.toLowerCase().includes(searchTerm);
+            let matchesStatus = true;
+            if (statusValue === 'active') matchesStatus = isRegular(member);
+            else if (statusValue === 'trainee') matchesStatus = isTrainee(member);
+            else if (statusValue === 'former') matchesStatus = !member.is_active;
+            const matchesBatch = batchValue === 'all' || member.batch === batchValue;
+            return matchesSearch && matchesStatus && matchesBatch;
+        });
+
+        filtered.sort((a, b) => {
+            const r = a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+            return sortValue === 'asc' ? r : -r;
+        });
+
+        [activeGrid, traineeGrid, formerGrid].forEach(g => { if (g) g.innerHTML = ''; });
+
+        const activeMembers = filtered.filter(isRegular);
+        const traineeMembers = filtered.filter(isTrainee);
+        const formerMembers = filtered.filter(m => !m.is_active);
+
+        if (activeSection) activeSection.style.display = activeMembers.length > 0 ? 'block' : 'none';
+        const traineeSection = $('trainee-members-section');
+        if (traineeSection) traineeSection.style.display = traineeMembers.length > 0 ? 'block' : 'none';
+
+        const isFormerFiltered = statusValue === 'all' || statusValue === 'former';
+        const isToggleOn = toggleFormerMembersBtn && toggleFormerMembersBtn.textContent.includes('Hide');
+        if (formerSection) {
+            const show = isFormerFiltered && (statusValue === 'former' || isToggleOn || archive);
+            formerSection.style.display = show && formerMembers.length > 0 ? 'block' : 'none';
+        }
+
+        const toggleContainer = document.querySelector('.member-toggle-container');
+        if (toggleContainer) {
+            toggleContainer.style.display = (formerMembers.length > 0 && statusValue === 'active' && !archive) ? 'block' : 'none';
+        }
+
+        if (noResults) noResults.style.display = filtered.length === 0 ? 'block' : 'none';
+
+        if (activeGrid) activeMembers.forEach(m => activeGrid.appendChild(createMemberCard(m)));
+        if (formerGrid) formerMembers.forEach(m => formerGrid.appendChild(createMemberCard(m)));
+        if (traineeGrid) traineeMembers.forEach(m => traineeGrid.appendChild(createMemberCard(m)));
+    }
+
     if (activeGrid) {
-        fetch('members.json')
-            .then(response => response.json())
+        fetchJSON('members.json')
             .then(data => {
                 allMembers = data;
-                
-                const isAllMembersPage = document.body.classList.contains('subpage') && 
-                                        document.querySelector('#members-archive');
-                
-                if (isAllMembersPage) {
+                const isArchive = isSubpage && document.querySelector('#members-archive');
+
+                if (isArchive) {
                     renderMembers();
-                    // Add event listeners for controls
-                    if (searchInput) searchInput.addEventListener('input', renderMembers);
-                    if (statusFilter) statusFilter.addEventListener('change', renderMembers);
-                    if (batchFilter) batchFilter.addEventListener('change', renderMembers);
-                    if (sortOrder) sortOrder.addEventListener('change', renderMembers);
+                    [searchInput, statusFilter, batchFilter, sortOrder].forEach(el => {
+                        if (el) el.addEventListener(el === searchInput ? 'input' : 'change', renderMembers);
+                    });
                 } else {
-                    // On home page, separate active (regular) and trainee members
-                    // Sort alphabetically first
                     allMembers.sort((a, b) => a.name.localeCompare(b.name));
-                    
-                    const activeOnly = allMembers.filter(m => m.is_active && !m.position.includes('Trainee'));
-                    const traineeOnly = allMembers.filter(m => m.is_active && m.position.includes('Trainee'));
-                    
-                    if (activeGrid) {
-                        activeGrid.innerHTML = '';
-                        activeOnly.forEach(member => {
-                            activeGrid.appendChild(createMemberCard(member));
-                        });
-                    }
-                    
+                    activeGrid.innerHTML = '';
+                    allMembers.filter(isRegular).forEach(m => activeGrid.appendChild(createMemberCard(m)));
+
                     if (traineeGrid) {
                         traineeGrid.innerHTML = '';
-                        traineeOnly.forEach(member => {
-                            traineeGrid.appendChild(createMemberCard(member));
-                        });
-                        
-                        // Hide section if no trainees
-                        const traineeSection = document.getElementById('trainee-members-section');
-                        if (traineeSection) {
-                            traineeSection.style.display = traineeOnly.length > 0 ? 'block' : 'none';
-                        }
+                        const trainees = allMembers.filter(isTrainee);
+                        trainees.forEach(m => traineeGrid.appendChild(createMemberCard(m)));
+                        const traineeSection = $('trainee-members-section');
+                        if (traineeSection) traineeSection.style.display = trainees.length > 0 ? 'block' : 'none';
                     }
                 }
             })
             .catch(error => console.error('Error loading members:', error));
     }
 
-    if (discographyList && songSearchInput) {
-        fetch('discography.json')
-            .then(response => response.json())
-            .then(data => {
-                allSongs = data;
-                // Sort alphabetically by title by default
-                allSongs.sort((a, b) => a.title.localeCompare(b.title));
-                renderDiscography(allSongs);
+    if (toggleFormerMembersBtn && formerSection) {
+        toggleFormerMembersBtn.addEventListener('click', () => {
+            const isHidden = formerSection.style.display === 'none';
+            formerSection.style.display = isHidden ? 'block' : 'none';
+            toggleFormerMembersBtn.textContent = isHidden ? 'Hide Former Members' : 'View Former Members';
+            if (isHidden) formerSection.scrollIntoView({ behavior: 'smooth' });
+        });
+    }
 
-                // Add event listeners for discography controls
-                songSearchInput.addEventListener('input', () => {
-                    const filtered = filterSongs();
-                    renderDiscography(filtered);
-                });
-                artistFilter.addEventListener('change', () => {
-                    const filtered = filterSongs();
-                    renderDiscography(filtered);
-                });
-                songSortOrder.addEventListener('change', () => {
-                    const filtered = filterSongs();
-                    renderDiscography(filtered);
-                });
+    /* ----- Discography ----- */
+
+    function filterSongs() {
+        const term = songSearchInput.value.toLowerCase();
+        const artistValue = artistFilter.value;
+        const dir = songSortOrder.value === 'asc' ? 1 : -1;
+
+        return allSongs
+            .filter(song => {
+                const isGroup = song.artist.toLowerCase() === 'upgirls';
+                const matchesSearch = song.title.toLowerCase().includes(term) || song.artist.toLowerCase().includes(term);
+                const matchesArtist = artistValue === 'all' || (artistValue === 'upgirls' ? isGroup : !isGroup);
+                return matchesSearch && matchesArtist;
+            })
+            .sort((a, b) => dir * a.title.toLowerCase().localeCompare(b.title.toLowerCase()));
+    }
+
+    function renderDiscography(songs) {
+        discographyList.innerHTML = '';
+        if (noSongsResults) noSongsResults.style.display = songs.length === 0 ? 'block' : 'none';
+        songs.forEach((song, i) => discographyList.appendChild(songRowElement(song, i, true)));
+    }
+
+    if (discographyList && songSearchInput) {
+        fetchJSON('discography.json')
+            .then(data => {
+                allSongs = data.sort((a, b) => a.title.localeCompare(b.title));
+                renderDiscography(allSongs);
+                const update = () => renderDiscography(filterSongs());
+                songSearchInput.addEventListener('input', update);
+                artistFilter.addEventListener('change', update);
+                songSortOrder.addEventListener('change', update);
             })
             .catch(error => console.error('Error loading discography:', error));
     }
 
-    // Load tweets data
-    const tweetsContainer = document.getElementById('tweets-container');
+    /* ----- Latest updates (tweets) ----- */
+
     if (tweetsContainer) {
-        fetch('x_tweets_updated.json')
-            .then(response => response.json())
+        fetchJSON('x_tweets_updated.json')
             .then(data => {
-                // Get latest 6 tweets
-                const latestTweets = data.slice(0, 6);
-                renderTweets(latestTweets);
+                const latest = data
+                    .filter(t => t.text && !isNaN(new Date(t.date)))
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .slice(0, 6);
+                renderTweets(tweetsContainer, latest);
             })
             .catch(error => console.error('Error loading tweets:', error));
     }
 
-    function renderTweets(tweets) {
-        if (!tweetsContainer) return;
-        
-        tweetsContainer.innerHTML = '';
-        
-        tweets.forEach(tweet => {
-            const tweetCard = document.createElement('div');
-            tweetCard.className = 'tweet-card';
-            
-            const dateStr = tweet.date || 'Recent';
-            const text = tweet.text || '';
-            const url = tweet.url || 'https://x.com/theupgirls';
-            
-            tweetCard.innerHTML = `
-                <div class="tweet-header">
-                    <span class="tweet-date">${dateStr}</span>
-                </div>
-                <div class="tweet-body">
-                    <p>${text}</p>
-                </div>
-                <div class="tweet-footer">
-                    <a href="${url}" target="_blank" rel="noopener" class="tweet-link">View on X →</a>
-                </div>
-            `;
-            
-            tweetsContainer.appendChild(tweetCard);
-        });
+    /* ----- Events ----- */
+
+    function renderHomeEvents() {
+        const note = $('shows-note');
+        const nextEl = $('next-event');
+        const now = new Date();
+        const upcoming = allShows.filter(s => !isPastShow(s, now)).sort(byDateAsc);
+
+        let list;
+        if (upcoming.length) {
+            list = upcoming.slice(0, 6);
+            if (note) note.textContent = upcoming.length > 6 ? `Next 6 of ${upcoming.length} upcoming events.` : '';
+            const next = upcoming.find(s => !isTBA(s));
+            if (next && nextEl) startCountdown(next, nextEl);
+        } else {
+            list = allShows.filter(s => !isTBA(s)).sort(byDateDesc).slice(0, 3);
+            if (note) note.textContent = 'No upcoming events scheduled right now. Here are the most recent ones.';
+        }
+        renderShowCards(showsList, list);
     }
 
-    if (showsList) {
-        fetch('shows.json')
-            .then(response => response.json())
-            .then(data => {
-                allShows = data;
-                
-                // If on index.html, only show upcoming
-                // If on all-events.html, show all
-                const isAllEventsPage = document.body.classList.contains('subpage') && 
-                                        document.querySelector('#all-events-section');
-                
-                if (isAllEventsPage) {
-                    renderShows(allShows, true);
-                    initCalendar();
-                    initEventTypeFilter();
-                } else {
-                    const now = new Date();
-                    const upcomingShows = allShows.filter(show => {
-                        // Create show date object. If time is provided, use the end time if possible, 
-                        // or just the end of day for safety.
-                        const showDate = new Date(show.date + 'T23:59:59');
-                        return showDate >= now;
-                    });
-                    renderShows(upcomingShows, false);
+    function initAllEvents() {
+        const PAGE_SIZE = 24;
+        const q = $('event-search');
+        const yearSel = $('event-year-filter');
+        const monthSel = $('event-month-filter');
+        const typeSel = $('event-type-filter');
+        const statusSel = $('event-status-filter');
+        const moreBtn = $('events-load-more');
+        const countEl = $('events-count');
+        let visible = PAGE_SIZE;
+
+        const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+        if (yearSel) {
+            const years = [...new Set(allShows.filter(s => !isTBA(s)).map(s => s.date.slice(0, 4)))].sort().reverse();
+            yearSel.innerHTML = '<option value="all">All Years</option>' + years.map(y => `<option value="${y}">${y}</option>`).join('');
+        }
+        if (monthSel) {
+            monthSel.innerHTML = '<option value="all">All Months</option>' +
+                MONTHS.map((m, i) => `<option value="${String(i + 1).padStart(2, '0')}">${m}</option>`).join('');
+        }
+
+        function filtered() {
+            const term = q ? q.value.trim().toLowerCase() : '';
+            const now = new Date();
+            return allShows.filter(s => {
+                if (term && !`${s.name} ${s.type} ${s.location || ''} ${s.description || ''}`.toLowerCase().includes(term)) return false;
+                if (yearSel && yearSel.value !== 'all' && s.date.slice(0, 4) !== yearSel.value) return false;
+                if (monthSel && monthSel.value !== 'all' && s.date.slice(5, 7) !== monthSel.value) return false;
+                if (typeSel && typeSel.value !== 'all' && (s.event_type || 'performance') !== typeSel.value) return false;
+                if (statusSel && statusSel.value !== 'all') {
+                    const past = isPastShow(s, now);
+                    if (statusSel.value === 'upcoming' && past) return false;
+                    if (statusSel.value === 'finished' && !past) return false;
                 }
-            })
-            .catch(error => console.error('Error loading shows:', error));
+                return true;
+            }).sort(byDateDesc);
+        }
+
+        function render() {
+            const list = filtered();
+            renderShowCards(showsList, list.slice(0, visible));
+            if (countEl) countEl.textContent = list.length ? `Showing ${Math.min(visible, list.length)} of ${list.length} events` : '';
+            if (moreBtn) moreBtn.style.display = list.length > visible ? 'inline-block' : 'none';
+            if (!list.length) showsList.innerHTML = '<p class="no-results">No events match your filters.</p>';
+        }
+
+        [q, yearSel, monthSel, typeSel, statusSel].forEach(el => {
+            if (el) el.addEventListener(el === q ? 'input' : 'change', () => { visible = PAGE_SIZE; render(); });
+        });
+        if (moreBtn) moreBtn.addEventListener('click', () => { visible += PAGE_SIZE; render(); });
+
+        // Clicking a day in the calendar narrows the list to that month and highlights the card.
+        function focusDate(dateString) {
+            if (q) q.value = '';
+            if (typeSel) typeSel.value = 'all';
+            if (statusSel) statusSel.value = 'all';
+            if (yearSel) yearSel.value = dateString.slice(0, 4);
+            if (monthSel) monthSel.value = dateString.slice(5, 7);
+            visible = PAGE_SIZE;
+            render();
+            const card = showsList.querySelector(`.show-card[data-date="${dateString}"]`);
+            if (card) {
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                card.classList.add('highlight');
+                setTimeout(() => card.classList.remove('highlight'), 2000);
+            }
+        }
+
+        render();
+        return focusDate;
     }
 
-    function initCalendar() {
-        const calendarContainer = document.getElementById('multi-calendar-view');
-        const monthYearDisplay = document.getElementById('current-month-year');
-        const prevMonthBtn = document.getElementById('prev-month');
-        const nextMonthBtn = document.getElementById('next-month');
-
+    function initCalendar(focusDate) {
+        const calendarContainer = $('multi-calendar-view');
+        const monthYearDisplay = $('current-month-year');
+        const prevMonthBtn = $('prev-month');
+        const nextMonthBtn = $('next-month');
         if (!calendarContainer || !monthYearDisplay) return;
 
-        let currentDate = new Date(); // Dynamic current date
-        let middleDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        const today = new Date();
+        const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const middleDate = new Date(today.getFullYear(), today.getMonth(), 1);
+        const monthFmt = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' });
 
         function createMonthGrid(date) {
             const grid = document.createElement('div');
             grid.className = 'calendar-grid';
 
-            const header = document.createElement('div');
-            header.className = 'month-grid-header';
-            header.textContent = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(date);
-            grid.appendChild(header);
+            const title = document.createElement('div');
+            title.className = 'month-grid-header';
+            title.textContent = monthFmt.format(date);
+            grid.appendChild(title);
 
-            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            dayNames.forEach(name => {
-                const dayNameDiv = document.createElement('div');
-                dayNameDiv.className = 'day-name';
-                dayNameDiv.textContent = name;
-                grid.appendChild(dayNameDiv);
+            ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(name => {
+                const el = document.createElement('div');
+                el.className = 'day-name';
+                el.textContent = name;
+                grid.appendChild(el);
             });
 
             const year = date.getFullYear();
             const month = date.getMonth();
-            const firstDayOfMonth = new Date(year, month, 1).getDay();
+            const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const daysInPrevMonth = new Date(year, month, 0).getDate();
+            const daysInPrev = new Date(year, month, 0).getDate();
 
-            // Fill in days from previous month
-            for (let i = firstDayOfMonth - 1; i >= 0; i--) {
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'calendar-day other-month';
-                dayDiv.textContent = daysInPrevMonth - i;
-                grid.appendChild(dayDiv);
-            }
+            const otherDay = n => {
+                const el = document.createElement('div');
+                el.className = 'calendar-day other-month';
+                el.textContent = n;
+                grid.appendChild(el);
+            };
+            for (let i = firstDay - 1; i >= 0; i--) otherDay(daysInPrev - i);
 
-            // Fill in days of current month
             for (let i = 1; i <= daysInMonth; i++) {
                 const dayDiv = document.createElement('div');
                 dayDiv.className = 'calendar-day';
                 dayDiv.textContent = i;
 
                 const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-                const dayEvents = allShows.filter(show => show.date === dateString);
+                const dayEvents = allShows.filter(s => s.date === dateString);
 
-            if (dayEvents.length > 0) {
-                // If the event is today, it's not past yet regardless of time for calendar view purposes
-                const eventDate = new Date(dateString + 'T00:00:00');
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                
-                const isPast = eventDate < today;
-                dayDiv.classList.add('has-event');
-                if (isPast) dayDiv.classList.add('past-event');
-                    
+                if (dayEvents.length > 0) {
+                    dayDiv.classList.add('has-event');
+                    if (new Date(dateString + 'T00:00:00') < todayStart) dayDiv.classList.add('past-event');
                     const dot = document.createElement('div');
                     dot.className = 'event-dot';
                     dayDiv.appendChild(dot);
-
                     dayDiv.title = dayEvents.map(e => e.name).join(', ');
-                    dayDiv.addEventListener('click', () => {
-                        const showCards = document.querySelectorAll('.show-card');
-                        showCards.forEach(card => {
-                            const cardDate = card.querySelector('.show-date-badge');
-                            if (cardDate && cardDate.textContent.includes(String(i)) && 
-                                cardDate.textContent.includes(new Intl.DateTimeFormat('en-US', { month: 'short' }).format(date))) {
-                                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                card.style.boxShadow = '0 0 15px var(--primary-pink)';
-                                setTimeout(() => {
-                                    card.style.boxShadow = '';
-                                }, 2000);
-                            }
-                        });
-                    });
+                    dayDiv.tabIndex = 0;
+                    dayDiv.setAttribute('role', 'button');
+                    const go = () => focusDate && focusDate(dateString);
+                    dayDiv.addEventListener('click', go);
+                    dayDiv.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
                 }
 
-                if (year === currentDate.getFullYear() && month === currentDate.getMonth() && i === currentDate.getDate()) {
+                if (year === today.getFullYear() && month === today.getMonth() && i === today.getDate()) {
                     dayDiv.classList.add('today');
                 }
-
                 grid.appendChild(dayDiv);
             }
 
-            // Fill in days from next month
-            const totalCells = 42;
-            const filledCells = firstDayOfMonth + daysInMonth;
-            for (let i = 1; i <= totalCells - filledCells; i++) {
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'calendar-day other-month';
-                dayDiv.textContent = i;
-                grid.appendChild(dayDiv);
-            }
-
+            for (let i = 1; i <= 42 - (firstDay + daysInMonth); i++) otherDay(i);
             return grid;
         }
 
         function renderCalendars() {
             calendarContainer.innerHTML = '';
-            
-            // Generate 3 months: prev, current (middle), next
-            const months = [
-                new Date(middleDate.getFullYear(), middleDate.getMonth() - 1, 1),
-                new Date(middleDate.getFullYear(), middleDate.getMonth(), 1),
-                new Date(middleDate.getFullYear(), middleDate.getMonth() + 1, 1)
-            ];
-
-            months.forEach((date, index) => {
-                const grid = createMonthGrid(date);
-                if (index === 0) grid.classList.add('prev-month-grid');
-                if (index === 1) grid.classList.add('current-month-grid');
-                if (index === 2) grid.classList.add('next-month-grid');
+            [-1, 0, 1].forEach((offset, index) => {
+                const grid = createMonthGrid(new Date(middleDate.getFullYear(), middleDate.getMonth() + offset, 1));
+                grid.classList.add(['prev-month-grid', 'current-month-grid', 'next-month-grid'][index]);
                 calendarContainer.appendChild(grid);
             });
-
-            monthYearDisplay.textContent = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(middleDate);
+            monthYearDisplay.textContent = monthFmt.format(middleDate);
         }
 
-        prevMonthBtn.addEventListener('click', () => {
-            middleDate.setMonth(middleDate.getMonth() - 1);
-            renderCalendars();
-        });
-
-        nextMonthBtn.addEventListener('click', () => {
-            middleDate.setMonth(middleDate.getMonth() + 1);
-            renderCalendars();
-        });
-
+        prevMonthBtn.addEventListener('click', () => { middleDate.setMonth(middleDate.getMonth() - 1); renderCalendars(); });
+        nextMonthBtn.addEventListener('click', () => { middleDate.setMonth(middleDate.getMonth() + 1); renderCalendars(); });
         renderCalendars();
     }
 
-    if (toggleFormerMembersBtn) {
-        toggleFormerMembersBtn.addEventListener('click', () => {
-            const isHidden = formerSection.style.display === 'none';
-            formerSection.style.display = isHidden ? 'block' : 'none';
-            toggleFormerMembersBtn.textContent = isHidden ? 'Hide Former Members' : 'View Former Members';
-            if (isHidden) {
-                formerSection.scrollIntoView({ behavior: 'smooth' });
-            }
-        });
-    }
-
-    function renderShows(shows, showPast = true) {
-        if (!showsList) return;
-        showsList.innerHTML = '';
-
-        // Current date
-        const now = new Date();
-        
-        // Sort shows by date (descending, newest first)
-        // TBA dates should go to the end
-        const sortedShows = [...shows].sort((a, b) => {
-            const dateA = a.date === 'TBA' ? new Date('9999-12-31') : new Date(a.date);
-            const dateB = b.date === 'TBA' ? new Date('9999-12-31') : new Date(b.date);
-            return dateB - dateA;
-        });
-
-        if (sortedShows.length === 0) {
-            showsList.innerHTML = '<p class="no-results">No upcoming shows scheduled at the moment. Check back soon!</p>';
-            return;
-        }
-
-        sortedShows.forEach(show => {
-            // Handle TBA dates
-            const isTBA = show.date === 'TBA';
-            let isPast = false;
-            let day, month, year;
-            
-            if (isTBA) {
-                day = 'TBA';
-                month = '';
-                year = '';
-            } else {
-                // Determine if event is past
-                const showDateOnly = new Date(show.date + 'T00:00:00');
-                const todayOnly = new Date();
-                todayOnly.setHours(0, 0, 0, 0);
-
-                if (showDateOnly < todayOnly) {
-                    isPast = true;
-                } else if (showDateOnly.getTime() === todayOnly.getTime()) {
-                    // It's today. Check the time if available.
-                    // Time format example: "19.00–20.00 WIB"
-                    if (show.time && show.time.includes('–')) {
-                        const endTimeStr = show.time.split('–')[1].split(' ')[0].replace('.', ':');
-                        const eventEndTime = new Date(show.date + 'T' + endTimeStr + ':00');
-                        if (eventEndTime < now) {
-                            isPast = true;
-                        }
-                    } else {
-                        // No specific end time, keep active until end of day
-                        const endOfDay = new Date(show.date + 'T23:59:59');
-                        if (endOfDay < now) isPast = true;
-                    }
-                }
-                
-                const displayDate = new Date(show.date + 'T12:00:00');
-                day = displayDate.getDate();
-                month = displayDate.toLocaleString('en-US', { month: 'short' });
-                year = displayDate.getFullYear();
-            }
-            
-            if (!showPast && isPast) return;
-
-            const showCard = document.createElement('div');
-            showCard.className = `show-card ${isPast ? 'past-event' : ''} ${show.event_type === 'audition' ? 'audition-card' : ''}`;
-            showCard.dataset.eventType = show.event_type || 'performance';
-            
-            const eventBadge = show.event_type === 'audition' ? '<span class="event-type-badge audition-badge">🎤 AUDITION</span>' : '';
-            
-            showCard.innerHTML = `
-                <div class="show-date-badge">
-                    <span class="day">${day}</span>
-                    ${month ? `<span class="month">${month}</span>` : ''}
-                    ${year ? `<span class="year">${year}</span>` : ''}
-                    ${isPast ? '<span class="status-badge">Finished</span>' : ''}
-                    ${!isPast && eventBadge ? eventBadge : ''}
-                </div>
-                <div class="show-info">
-                    <h4 class="show-name">${show.name}</h4>
-                    <p class="show-type">${show.type}</p>
-                    ${show.description ? `<p class="show-description">${show.description}</p>` : ''}
-                    <div class="show-meta">
-                        ${show.time ? `<span class="show-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>${show.time}</span>` : ''}
-                        ${show.location ? `<span class="show-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:middle;margin-left:8px;margin-right:4px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>${show.location}</span>` : ''}
-                    </div>
-                    ${isPast ? 
-                        '<span class="ticket-link disabled">Event Finished</span>' : 
-                        `<a href="${show.ticket_link}" class="ticket-link ${show.event_type === 'audition' ? 'audition-link' : ''}" ${show.ticket_link === '#' || !show.ticket_link ? 'style="opacity: 0.5; pointer-events: none;"' : ''} target="_blank" rel="noopener">${show.event_type === 'audition' ? 'Apply Now' : (show.ticket_link === '#' || !show.ticket_link ? 'Ticket Link Unavailable' : 'Buy Tickets')}</a>`
-                    }
-                </div>
-            `;
-
-            showsList.appendChild(showCard);
-        });
-    }
-
-    function initEventTypeFilter() {
-        const eventTypeFilter = document.getElementById('event-type-filter');
-        if (!eventTypeFilter) return;
-
-        eventTypeFilter.addEventListener('change', function() {
-            const filterValue = this.value;
-            const showCards = document.querySelectorAll('.show-card');
-            
-            showCards.forEach(card => {
-                const eventType = card.dataset.eventType || 'performance';
-                
-                if (filterValue === 'all') {
-                    card.style.display = '';
-                } else if (filterValue === eventType) {
-                    card.style.display = '';
+    if (showsList) {
+        bindCalendarButtons(() => allShows);
+        fetchJSON('shows.json')
+            .then(data => {
+                allShows = data;
+                if (isSubpage && document.querySelector('#all-events-section')) {
+                    const focusDate = initAllEvents();
+                    initCalendar(focusDate);
                 } else {
-                    card.style.display = 'none';
+                    renderHomeEvents();
                 }
+            })
+            .catch(error => {
+                console.error('Error loading shows:', error);
+                showsList.innerHTML = '<p class="no-results">Could not load events. Please try again later.</p>';
             });
-        });
-    }
-
-    function filterSongs() {
-        const searchTerm = songSearchInput.value.toLowerCase();
-        const artistValue = artistFilter.value;
-        const sortValue = songSortOrder.value;
-
-        let filtered = allSongs.filter(song => {
-            const matchesSearch = song.title.toLowerCase().includes(searchTerm) || 
-                                 song.artist.toLowerCase().includes(searchTerm);
-            
-            let matchesArtist = true;
-            if (artistValue === 'upgirls') {
-                matchesArtist = song.artist.toLowerCase() === 'upgirls';
-            } else if (artistValue === 'solo') {
-                matchesArtist = song.artist.toLowerCase() !== 'upgirls';
-            }
-
-            return matchesSearch && matchesArtist;
-        });
-
-        // Sort songs
-        filtered.sort((a, b) => {
-            const titleA = a.title.toLowerCase();
-            const titleB = b.title.toLowerCase();
-            if (sortValue === 'asc') {
-                return titleA < titleB ? -1 : (titleA > titleB ? 1 : 0);
-            } else {
-                return titleA > titleB ? -1 : (titleA < titleB ? 1 : 0);
-            }
-        });
-
-        return filtered;
-    }
-
-    function renderDiscography(songs) {
-        discographyList.innerHTML = '';
-        
-        if (songs.length === 0) {
-            if (noSongsResults) noSongsResults.style.display = 'block';
-            return;
-        }
-        
-        if (noSongsResults) noSongsResults.style.display = 'none';
-
-        songs.forEach((song, index) => {
-            const songRow = document.createElement('div');
-            songRow.className = 'song-row clickable';
-            songRow.onclick = (e) => {
-                // Prevent trigger if clicking on an icon link
-                if (e.target.closest('.song-links-inline')) return;
-                window.location.href = `song.html?id=${song.id}`;
-            };
-            
-            let songLinks = '';
-            if (song.spotify) {
-                songLinks += `
-                    <a href="${song.spotify}" target="_blank" title="Spotify" class="song-icon spotify">
-                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.306c-.221.362-.693.475-1.054.254-2.894-1.768-6.536-2.167-10.824-1.185-.413.095-.826-.164-.922-.577-.095-.413.164-.826.577-.922 4.697-1.073 8.71-.611 11.968 1.381.363.221.476.693.255 1.049zm1.467-3.267c-.278.452-.871.597-1.323.32-3.31-2.036-8.358-2.623-12.273-1.434-.51.155-1.044-.136-1.199-.646-.155-.51.136-1.044.646-1.199 4.47-1.356 10.033-.705 13.829 1.623.453.277.597.871.32 1.336zm.126-3.414C15.228 8.243 8.85 8.03 5.158 9.151c-.596.181-1.23-.153-1.411-.749-.181-.596.153-1.23.749-1.411 4.238-1.286 11.284-1.046 15.748 1.605.536.319.712 1.011.393 1.547-.319.535-1.011.712-1.547.393z"/></svg>
-                    </a>`;
-            }
-            if (song.youtube_music) {
-                songLinks += `
-                    <a href="${song.youtube_music}" target="_blank" title="YouTube Music" class="song-icon youtube-music">
-                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 17.022c-2.774 0-5.022-2.248-5.022-5.022S9.226 6.978 12 6.978s5.022 2.248 5.022 5.022-2.248 5.022-5.022 5.022z"/><circle cx="12" cy="12" r="3.2"/><path d="M12 4.407c-4.187 0-7.593 3.406-7.593 7.593s3.406 7.593 7.593 7.593 7.593-3.406 7.593-7.593-3.406-7.593-7.593-7.593zm0 13.586c-3.305 0-6 2.695-6 6s2.695 6 6 6 6-2.695 6-6-2.695-6-6-6z" opacity=".3"/></svg>
-                    </a>`;
-            }
-            if (song.youtube_video) {
-                songLinks += `
-                    <a href="${song.youtube_video}" target="_blank" title="YouTube Video" class="song-icon youtube-video">
-                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                    </a>`;
-            }
-            
-            songRow.innerHTML = `
-                <div class="song-index">${index + 1}</div>
-                <div class="song-info">
-                    <div class="song-title">${song.title}</div>
-                    <div class="song-artist">${song.artist} ${song.release_year ? `<span class="song-year-inline">(${song.release_year})</span>` : ''}</div>
-                </div>
-                <div class="song-links-inline">
-                    ${songLinks}
-                </div>
-            `;
-            discographyList.appendChild(songRow);
-        });
-    }
-
-    function renderMembers() {
-        const searchTerm = (searchInput && searchInput.value) ? searchInput.value.toLowerCase() : '';
-        const statusValue = statusFilter ? statusFilter.value : (document.querySelector('#members-archive') ? 'all' : 'active');
-        const batchValue = batchFilter ? batchFilter.value : 'all';
-        const sortValue = sortOrder ? sortOrder.value : 'asc';
-
-        // Filter members
-        let filtered = allMembers.filter(member => {
-            const matchesSearch = member.name.toLowerCase().includes(searchTerm);
-            let matchesStatus = false;
-            
-            if (statusValue === 'all') {
-                matchesStatus = true;
-            } else if (statusValue === 'active') {
-                matchesStatus = member.is_active && !member.position.includes('Trainee');
-            } else if (statusValue === 'trainee') {
-                matchesStatus = member.is_active && member.position.includes('Trainee');
-            } else if (statusValue === 'former') {
-                matchesStatus = !member.is_active;
-            }
-            
-            let matchesBatch = false;
-            if (batchValue === 'all') {
-                matchesBatch = true;
-            } else if (batchValue === 'Trainee') {
-                matchesBatch = member.batch === 'Trainee';
-            } else {
-                matchesBatch = member.batch === batchValue;
-            }
-            
-            return matchesSearch && matchesStatus && matchesBatch;
-        });
-
-        // Sort members
-        filtered.sort((a, b) => {
-            const nameA = a.name.toLowerCase();
-            const nameB = b.name.toLowerCase();
-            if (sortValue === 'asc') {
-                return nameA < nameB ? -1 : (nameA > nameB ? 1 : 0);
-            } else {
-                return nameA > nameB ? -1 : (nameA < nameB ? 1 : 0);
-            }
-        });
-
-        // Clear grids
-        if (activeGrid) activeGrid.innerHTML = '';
-        if (traineeGrid) traineeGrid.innerHTML = '';
-        if (formerGrid) formerGrid.innerHTML = '';
-
-        const activeMembers = filtered.filter(m => m.is_active && !m.position.includes('Trainee'));
-        const traineeMembers = filtered.filter(m => m.is_active && m.position.includes('Trainee'));
-        const formerMembers = filtered.filter(m => !m.is_active);
-
-        // Update visibility of sections
-        if (activeSection) activeSection.style.display = activeMembers.length > 0 ? 'block' : 'none';
-        
-        const traineeSection = document.getElementById('trainee-members-section');
-        if (traineeSection) {
-            traineeSection.style.display = traineeMembers.length > 0 ? 'block' : 'none';
-        }
-        
-        // Handle Former Members Section visibility based on filter and toggle
-        const isFormerFiltered = statusValue === 'all' || statusValue === 'former';
-        const isToggleOn = toggleFormerMembersBtn && toggleFormerMembersBtn.textContent.includes('Hide');
-        
-        if (formerSection) {
-            if (isFormerFiltered && (statusValue === 'former' || isToggleOn || document.querySelector('#members-archive'))) {
-                formerSection.style.display = formerMembers.length > 0 ? 'block' : 'none';
-            } else {
-                formerSection.style.display = 'none';
-            }
-        }
-
-        // Show/Hide the toggle button container
-        const shouldShowFormerToggle = formerMembers.length > 0 && statusValue === 'active' && !document.querySelector('#members-archive');
-        const toggleContainer = document.querySelector('.member-toggle-container');
-        if (toggleContainer) {
-            toggleContainer.style.display = shouldShowFormerToggle ? 'block' : 'none';
-        }
-        
-        if (noResults) noResults.style.display = filtered.length === 0 ? 'block' : 'none';
-
-        // Render active members
-        if (activeGrid) {
-            activeMembers.forEach(member => {
-                activeGrid.appendChild(createMemberCard(member));
-            });
-        }
-
-        // Render former members
-        if (formerGrid) {
-            formerMembers.forEach(member => {
-                formerGrid.appendChild(createMemberCard(member));
-            });
-        }
-
-        // Render trainee members
-        if (traineeGrid) {
-            traineeMembers.forEach(member => {
-                traineeGrid.appendChild(createMemberCard(member));
-            });
-        }
-    }
-
-    function createMemberCard(member) {
-        const card = document.createElement('div');
-        card.className = 'card clickable';
-        card.onclick = () => {
-            window.location.href = `member.html?name=${encodeURIComponent(member.name)}`;
-        };
-        
-        const imgUrl = member.image || 'https://via.placeholder.com/300x400?text=' + member.name;
-        
-        card.innerHTML = `
-            <div class="member-img-wrapper">
-                <img src="${imgUrl}" alt="${member.name}" class="member-thumb ${member.is_active ? '' : 'former-img'}">
-            </div>
-            <div class="member-card-info">
-                <h4>${member.name}</h4>
-            </div>
-        `;
-        return card;
     }
 });
 
+/* =========================================================
+   Detail pages (called from song.html / member.html)
+   ========================================================= */
+
 function loadSongDetail(id) {
-    fetch('discography.json')
-        .then(response => response.json())
+    fetchJSON('discography.json')
         .then(songs => {
-            const song = songs.find(s => s.id == id);
-            if (song) {
-                document.getElementById('song-title').textContent = song.title;
-                
-                // Make artist/featuring members clickable
-                const songArtist = document.getElementById('song-artist');
-                if (songArtist) {
-                    const artists = song.artist.split(',').map(a => a.trim());
-                    songArtist.innerHTML = '';
-                    artists.forEach((artist, index) => {
-                        const isUPgirls = artist.toLowerCase() === 'upgirls';
-                        const cleanName = artist.replace(/\s+UPgirls$/i, '').trim();
-                        
-                        if (isUPgirls) {
-                            const span = document.createElement('span');
-                            span.textContent = artist;
-                            songArtist.appendChild(span);
-                        } else {
-                            const link = document.createElement('a');
-                            link.href = `member.html?name=${encodeURIComponent(cleanName)}`;
-                            link.textContent = artist;
-                            link.className = 'member-link';
-                            songArtist.appendChild(link);
-                        }
-                        
-                        if (index < artists.length - 1) {
-                            songArtist.appendChild(document.createTextNode(', '));
-                        }
-                    });
-                }
-                
-                const songType = document.getElementById('song-type');
-                const songYear = document.getElementById('song-year');
-                if (songType) songType.textContent = song.type || 'Single';
-                if (songYear) songYear.textContent = song.release_year || '';
-
-                const streamingContainer = document.getElementById('streaming-links');
-                streamingContainer.innerHTML = '';
-                
-                if (song.spotify) {
-                    streamingContainer.innerHTML += `
-                        <a href="${song.spotify}" target="_blank" class="streaming-btn spotify">
-                            <svg viewBox="0 0 24 24" fill="currentColor" class="btn-icon"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.306c-.221.362-.693.475-1.054.254-2.894-1.768-6.536-2.167-10.824-1.185-.413.095-.826-.164-.922-.577-.095-.413.164-.826.577-.922 4.697-1.073 8.71-.611 11.968 1.381.363.221.476.693.255 1.049zm1.467-3.267c-.278.452-.871.597-1.323.32-3.31-2.036-8.358-2.623-12.273-1.434-.51.155-1.044-.136-1.199-.646-.155-.51.136-1.044.646-1.199 4.47-1.356 10.033-.705 13.829 1.623.453.277.597.871.32 1.336zm.126-3.414C15.228 8.243 8.85 8.03 5.158 9.151c-.596.181-1.23-.153-1.411-.749-.181-.596.153-1.23.749-1.411 4.238-1.286 11.284-1.046 15.748 1.605.536.319.712 1.011.393 1.547-.319.535-1.011.712-1.547.393z"/></svg>
-                            Spotify
-                        </a>`;
-                }
-                if (song.youtube_music) {
-                    streamingContainer.innerHTML += `
-                        <a href="${song.youtube_music}" target="_blank" class="streaming-btn youtube-music">
-                            <svg viewBox="0 0 24 24" fill="currentColor" class="btn-icon"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 17.022c-2.774 0-5.022-2.248-5.022-5.022S9.226 6.978 12 6.978s5.022 2.248 5.022 5.022-2.248 5.022-5.022 5.022z"/><circle cx="12" cy="12" r="3.2"/><path d="M12 4.407c-4.187 0-7.593 3.406-7.593 7.593s3.406 7.593 7.593 7.593 7.593-3.406 7.593-7.593-3.406-7.593-7.593-7.593zm0 13.586c-3.305 0-6 2.695-6 6s2.695 6 6 6 6-2.695 6-6-2.695-6-6-6z" opacity=".3"/></svg>
-                            YouTube Music
-                        </a>`;
-                }
-                if (song.youtube_video) {
-                    streamingContainer.innerHTML += `
-                        <a href="${song.youtube_video}" target="_blank" class="streaming-btn youtube-video">
-                            <svg viewBox="0 0 24 24" fill="currentColor" class="btn-icon"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                            YouTube Video
-                        </a>`;
-                }
-                
-                if (streamingContainer.innerHTML === '') {
-                    const songLinksSection = document.querySelector('.song-links');
-                    if (songLinksSection) songLinksSection.style.display = 'none';
-                }
-
-                const lyricsContent = document.getElementById('lyrics-content');
-                const lyricsPlaceholder = document.getElementById('lyrics-placeholder');
-                if (song.lyrics) {
-                    lyricsContent.textContent = song.lyrics;
-                    lyricsContent.style.display = 'block';
-                    if (lyricsPlaceholder) lyricsPlaceholder.style.display = 'none';
-                } else {
-                    lyricsContent.style.display = 'none';
-                    if (lyricsPlaceholder) lyricsPlaceholder.style.display = 'block';
-                }
-            } else {
+            const song = songs.find(s => String(s.id) === String(id));
+            if (!song) {
                 document.getElementById('song-detail').innerHTML = '<p>Song not found. <a href="index.html">Back to home</a></p>';
+                return;
+            }
+
+            document.getElementById('song-title').textContent = song.title;
+            setPageMeta(`${song.title} - ${song.artist} | UPgirls Fan Site`,
+                        `${song.title} by ${song.artist}${song.release_year ? ` (${song.release_year})` : ''}. Lyrics and streaming links on the UPgirls fan site.`);
+
+            // Featured members link to their profile; the group name stays plain text.
+            const songArtist = document.getElementById('song-artist');
+            if (songArtist) {
+                songArtist.innerHTML = '';
+                song.artist.split(',').map(a => a.trim()).forEach((artist, index, all) => {
+                    if (artist.toLowerCase() === 'upgirls') {
+                        const span = document.createElement('span');
+                        span.textContent = artist;
+                        songArtist.appendChild(span);
+                    } else {
+                        const link = document.createElement('a');
+                        link.href = `member.html?name=${encodeURIComponent(artist.replace(/\s+UPgirls$/i, '').trim())}`;
+                        link.textContent = artist;
+                        link.className = 'member-link';
+                        songArtist.appendChild(link);
+                    }
+                    if (index < all.length - 1) songArtist.appendChild(document.createTextNode(', '));
+                });
+            }
+
+            const songType = document.getElementById('song-type');
+            const songYear = document.getElementById('song-year');
+            if (songType) songType.textContent = song.type || 'Single';
+            if (songYear) songYear.textContent = song.release_year || '';
+
+            const streamingContainer = document.getElementById('streaming-links');
+            streamingContainer.innerHTML = songLinksHTML(song, 'button');
+            if (!streamingContainer.innerHTML) {
+                const section = document.querySelector('.song-links');
+                if (section) section.style.display = 'none';
+            }
+
+            const lyricsContent = document.getElementById('lyrics-content');
+            const lyricsPlaceholder = document.getElementById('lyrics-placeholder');
+            if (song.lyrics) {
+                lyricsContent.textContent = song.lyrics;
+                lyricsContent.style.display = 'block';
+                if (lyricsPlaceholder) lyricsPlaceholder.style.display = 'none';
+            } else {
+                lyricsContent.style.display = 'none';
+                if (lyricsPlaceholder) lyricsPlaceholder.style.display = 'block';
             }
         })
         .catch(error => console.error('Error loading song details:', error));
 }
 
+// Songs a member is credited on, matched by exact name in the artist list.
+function songsForMember(songs, memberName) {
+    const name = memberName.toLowerCase();
+    return songs.filter(song =>
+        song.artist.split(',').map(a => a.replace(/\s+UPgirls$/i, '').trim().toLowerCase()).includes(name));
+}
+
 function renderMemberDiscography(songs) {
     const songList = document.getElementById('member-song-list');
     if (!songList) return;
-
+    songList.innerHTML = '';
     if (songs.length === 0) {
         songList.innerHTML = '<p class="no-songs">No specific songs found for this member.</p>';
         return;
     }
-
-    songList.innerHTML = '';
-    songs.forEach((song, index) => {
-        const songRow = document.createElement('div');
-        songRow.className = 'song-row clickable';
-        songRow.onclick = (e) => {
-            if (e.target.closest('.song-links-inline')) return;
-            window.location.href = `song.html?id=${song.id}`;
-        };
-        
-        let songLinks = '';
-        if (song.spotify) {
-            songLinks += `
-                <a href="${song.spotify}" target="_blank" title="Spotify" class="song-icon spotify">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.306c-.221.362-.693.475-1.054.254-2.894-1.768-6.536-2.167-10.824-1.185-.413.095-.826-.164-.922-.577-.095-.413.164-.826.577-.922 4.697-1.073 8.71-.611 11.968 1.381.363.221.476.693.255 1.049zm1.467-3.267c-.278.452-.871.597-1.323.32-3.31-2.036-8.358-2.623-12.273-1.434-.51.155-1.044-.136-1.199-.646-.155-.51.136-1.044.646-1.199 4.47-1.356 10.033-.705 13.829 1.623.453.277.597.871.32 1.336zm.126-3.414C15.228 8.243 8.85 8.03 5.158 9.151c-.596.181-1.23-.153-1.411-.749-.181-.596.153-1.23.749-1.411 4.238-1.286 11.284-1.046 15.748 1.605.536.319.712 1.011.393 1.547-.319.535-1.011.712-1.547.393z"/></svg>
-                </a>`;
-        }
-        if (song.youtube_music) {
-            songLinks += `
-                <a href="${song.youtube_music}" target="_blank" title="YouTube Music" class="song-icon youtube-music">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 17.022c-2.774 0-5.022-2.248-5.022-5.022S9.226 6.978 12 6.978s5.022 2.248 5.022 5.022-2.248 5.022-5.022 5.022z"/><circle cx="12" cy="12" r="3.2"/><path d="M12 4.407c-4.187 0-7.593 3.406-7.593 7.593s3.406 7.593 7.593 7.593 7.593-3.406 7.593-7.593-3.406-7.593-7.593-7.593zm0 13.586c-3.305 0-6 2.695-6 6s2.695 6 6 6 6-2.695 6-6-2.695-6-6-6z" opacity=".3"/></svg>
-                </a>`;
-        }
-        if (song.youtube_video) {
-            songLinks += `
-                <a href="${song.youtube_video}" target="_blank" title="YouTube Video" class="song-icon youtube-video">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                </a>`;
-        }
-        
-        songRow.innerHTML = `
-            <div class="song-index">${index + 1}</div>
-            <div class="song-info">
-                <div class="song-title">${song.title}</div>
-                <div class="song-artist">${song.artist}</div>
-            </div>
-            <div class="song-links-inline">
-                ${songLinks}
-            </div>
-        `;
-        songList.appendChild(songRow);
-    });
+    songs.forEach((song, i) => songList.appendChild(songRowElement(song, i, false)));
 }
 
 function loadMemberDetail(name) {
     const detailContainer = document.getElementById('member-detail');
     if (!detailContainer) return;
 
-    fetch('members.json')
-        .then(response => response.json())
+    fetchJSON('members.json')
         .then(data => {
-            const member = data.find(m => m.full_name.toLowerCase() === name.toLowerCase() || m.name.toLowerCase() === name.toLowerCase());
-            if (member) {
-                const imgUrl = member.image || 'https://via.placeholder.com/600x800?text=' + member.name;
-                
-                let socials = '';
-                if (member.instagram) {
-                    socials += `<a href="https://instagram.com/${member.instagram}" target="_blank" class="social-btn ig">Instagram</a> `;
-                }
-                if (member.x) {
-                    socials += `<a href="https://x.com/${member.x}" target="_blank" class="social-btn x-com">X (Twitter)</a> `;
-                }
-                if (member.tiktok) {
-                    socials += `<a href="https://tiktok.com/@${member.tiktok}" target="_blank" class="social-btn tiktok">TikTok</a> `;
-                }
-                if (member.idn_live) {
-                    socials += `<a href="https://www.idn.app/${member.idn_live}" target="_blank" class="social-btn idn">IDN Live</a>`;
-                }
+            const lower = name.toLowerCase();
+            const member = data.find(m => (m.full_name || '').toLowerCase() === lower || m.name.toLowerCase() === lower);
+            if (!member) {
+                detailContainer.innerHTML = '<p>Member not found. <a href="index.html">Back to home</a></p>';
+                return;
+            }
 
-                const statusTag = member.is_active ? '' : '<span class="status-badge former">Former Member</span>';
+            const fallback = placeholderImg(member.name);
+            const isValid = v => v && v !== 'N/A' && v !== 'Unknown';
 
-                // Build profile metadata list from available fields
-                const isValid = v => v && v !== 'N/A' && v !== 'Unknown';
-                const metaRows = [];
-                if (isValid(member.full_name) && member.full_name.toLowerCase() !== member.name.toLowerCase()) metaRows.push(`<li><span class="label">Full Name</span><span class="value">${member.full_name}</span></li>`);
-                if (isValid(member.position)) metaRows.push(`<li><span class="label">Position</span><span class="value">${member.position}</span></li>`);
-                if (isValid(member.batch)) metaRows.push(`<li><span class="label">Batch</span><span class="value">${member.batch}</span></li>`);
-                if (isValid(member.birth_date)) metaRows.push(`<li><span class="label">Birth Date</span><span class="value">${member.birth_date}</span></li>`);
-                if (isValid(member.birth_place)) metaRows.push(`<li><span class="label">Birth Place</span><span class="value">${member.birth_place}</span></li>`);
-                if (isValid(member.blood_type)) metaRows.push(`<li><span class="label">Blood Type</span><span class="value">${member.blood_type}</span></li>`);
-                if (isValid(member.mbti)) metaRows.push(`<li><span class="label">MBTI</span><span class="value">${member.mbti}</span></li>`);
-                if (isValid(member.zodiac)) metaRows.push(`<li><span class="label">Zodiac</span><span class="value">${member.zodiac}</span></li>`);
-                if (isValid(member.chinese_zodiac)) metaRows.push(`<li><span class="label">Chinese Zodiac</span><span class="value">${member.chinese_zodiac}</span></li>`);
-                if (isValid(member.nationality)) metaRows.push(`<li><span class="label">Nationality</span><span class="value">${member.nationality}</span></li>`);
-                if (isValid(member.representative_emoji)) metaRows.push(`<li><span class="label">Emoji</span><span class="value">${member.representative_emoji}</span></li>`);
-                const metaHTML = metaRows.length
-                    ? `<ul class="profile-meta">${metaRows.join('')}</ul>`
-                    : '';
+            const socialDefs = [
+                ['instagram', 'https://instagram.com/', 'ig', 'Instagram'],
+                ['x', 'https://x.com/', 'x-com', 'X (Twitter)'],
+                ['tiktok', 'https://tiktok.com/@', 'tiktok', 'TikTok'],
+                ['idn_live', 'https://www.idn.app/', 'idn', 'IDN Live']
+            ];
+            const socials = socialDefs
+                .filter(([field]) => member[field])
+                .map(([field, base, cls, label]) =>
+                    `<a href="${esc(base + encodeURIComponent(member[field]))}" target="_blank" rel="noopener" class="social-btn ${cls}">${label}</a>`)
+                .join(' ');
 
-                detailContainer.innerHTML = `
-                    <div class="member-detail-grid">
-                        <div class="member-image-container">
-                            <img src="${imgUrl}" alt="${member.name}" class="detail-image ${member.is_active ? '' : 'former-img'}">
+            const statusTag = member.is_active ? '' : '<span class="status-badge former">Former Member</span>';
+
+            const fields = [
+                ['Full Name', isValid(member.full_name) && member.full_name.toLowerCase() !== member.name.toLowerCase() ? member.full_name : null],
+                ['Position', member.position], ['Batch', member.batch], ['Birth Date', member.birth_date],
+                ['Birth Place', member.birth_place], ['Blood Type', member.blood_type], ['MBTI', member.mbti],
+                ['Zodiac', member.zodiac], ['Chinese Zodiac', member.chinese_zodiac], ['Nationality', member.nationality],
+                ['Emoji', member.representative_emoji]
+            ];
+            const metaRows = fields
+                .filter(([, v]) => isValid(v))
+                .map(([label, v]) => `<li><span class="label">${label}</span><span class="value">${esc(v)}</span></li>`);
+            const metaHTML = metaRows.length ? `<ul class="profile-meta">${metaRows.join('')}</ul>` : '';
+
+            setPageMeta(`${member.name} - UPgirls Member Profile | UPgirls Fan Site`,
+                        member.facts ? member.facts.slice(0, 150).replace(/\s+\S*$/, '') + '…' : `Profile of ${member.name}, member of UPgirls.`);
+            if (member.image) setMeta('og:image', new URL(member.image, window.location.href).href, 'property');
+
+            detailContainer.innerHTML = `
+                <div class="member-detail-grid">
+                    <div class="member-image-container">
+                        <img src="${esc(member.image || fallback)}" data-fallback="${esc(fallback)}" alt="${esc(member.name)}" decoding="async" class="detail-image ${member.is_active ? '' : 'former-img'}">
+                    </div>
+                    <div class="member-info">
+                        ${statusTag}
+                        <h2>${esc(member.name)}</h2>
+                        ${metaHTML}
+                        <div class="bio-section">
+                            <h3>Biography &amp; Facts</h3>
+                            <p>${esc(member.facts || '—')}</p>
                         </div>
-                        <div class="member-info">
-                            ${statusTag}
-                            <h2>${member.name}</h2>
-                            ${metaHTML}
-                            <div class="bio-section">
-                                <h3>Biography & Facts</h3>
-                                <p>${member.facts || '—'}</p>
-                            </div>
-                            <div class="social-section">
-                                <h3>Follow ${member.name}</h3>
-                                <div class="social-btns">
-                                    ${socials}
-                                </div>
-                            </div>
-                            <div id="member-discography" class="member-discography-section">
-                                <h3>Discography</h3>
-                                <div id="member-song-list" class="discography-list">
-                                    <p class="loading-songs">Loading songs...</p>
-                                </div>
-                            </div>
+                        <div class="social-section">
+                            <h3>Follow ${esc(member.name)}</h3>
+                            <div class="social-btns">${socials}</div>
+                        </div>
+                        <div id="member-discography" class="member-discography-section" style="display: none;">
+                            <h3>Discography</h3>
+                            <div id="member-song-list" class="discography-list"></div>
                         </div>
                     </div>
-                `;
+                </div>
+            `;
 
-                // Fetch and render discography for this member (only for Nat and Nay)
-                const membersWithDiscography = ['Nat', 'Nay'];
-                const discographySection = document.getElementById('member-discography');
-                
-                if (membersWithDiscography.includes(member.name)) {
-                    if (discographySection) discographySection.style.display = 'block';
-                    fetch('discography.json')
-                        .then(response => response.json())
-                        .then(songs => {
-                            const memberSongs = songs.filter(song => 
-                                song.artist.toLowerCase().includes(member.name.toLowerCase())
-                            );
-                            renderMemberDiscography(memberSongs);
-                        })
-                        .catch(error => {
-                            console.error('Error loading member discography:', error);
-                            const songList = document.getElementById('member-song-list');
-                            if (songList) songList.innerHTML = '<p>Error loading songs.</p>';
-                        });
-                } else {
-                    if (discographySection) discographySection.style.display = 'none';
-                }
-            } else {
-                detailContainer.innerHTML = `<p>Member not found. <a href="index.html">Back to home</a></p>`;
-            }
+            // Only members credited on a song get a discography section.
+            fetchJSON('discography.json')
+                .then(songs => {
+                    const memberSongs = songsForMember(songs, member.name);
+                    if (memberSongs.length) {
+                        document.getElementById('member-discography').style.display = 'block';
+                        renderMemberDiscography(memberSongs);
+                    }
+                })
+                .catch(error => console.error('Error loading member discography:', error));
         })
         .catch(error => {
             console.error('Error loading member details:', error);
-            detailContainer.innerHTML = `<p>Error loading member details.</p>`;
+            detailContainer.innerHTML = '<p>Error loading member details.</p>';
         });
 }

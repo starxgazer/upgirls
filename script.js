@@ -688,6 +688,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         if (moreBtn) moreBtn.addEventListener('click', () => { visible += PAGE_SIZE; render(); });
         if (chipClear) chipClear.addEventListener('click', () => selection.clear());
+        const chipSee = $('date-filter-see');
+        if (chipSee) chipSee.addEventListener('click', () => {
+            const top = showsList.getBoundingClientRect().top + window.scrollY - 130;
+            window.scrollTo({ top, behavior: 'smooth' });
+        });
 
         // A calendar pick shows only that date (or range), regardless of the other filters.
         selection.listeners.push(() => {
@@ -701,10 +706,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         render();
-        return () => { if (chip && selection.from) chip.scrollIntoView({ behavior: 'smooth', block: 'center' }); };
     }
 
-    function initCalendar(revealList) {
+    function initCalendar() {
         const calendarContainer = $('multi-calendar-view');
         const monthYearDisplay = $('current-month-year');
         const prevMonthBtn = $('prev-month');
@@ -779,11 +783,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function renderCalendars() {
             calendarContainer.innerHTML = '';
-            [-1, 0, 1].forEach((offset, index) => {
-                const grid = createMonthGrid(new Date(middleDate.getFullYear(), middleDate.getMonth() + offset, 1));
-                grid.classList.add(['prev-month-grid', 'current-month-grid', 'next-month-grid'][index]);
-                calendarContainer.appendChild(grid);
-            });
+            const grid = createMonthGrid(new Date(middleDate.getFullYear(), middleDate.getMonth(), 1));
+            grid.classList.add('current-month-grid');
+            calendarContainer.appendChild(grid);
             monthYearDisplay.textContent = monthFmt.format(middleDate);
             paintSelection();
         }
@@ -812,7 +814,6 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             if (e.shiftKey && anchor) {
                 selection.set(anchor, day.dataset.date);
-                revealList();
                 return;
             }
             anchor = day.dataset.date;
@@ -828,19 +829,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('mouseup', () => {
             if (!dragging) return;
             dragging = false;
-            if (dragged) {
-                revealList();
-                return;
-            }
+            if (dragged) return;
             const single = selection.from && selection.from === selection.to;
             if (single && selection.from === anchor) {
                 selection.clear();                      // same day again: cancel
             } else if (single) {
                 selection.set(selection.from, anchor);  // second day: make a range
-                revealList();
             } else {
                 selection.set(anchor, anchor);          // none or a range: start over
-                revealList();
             }
         });
         document.addEventListener('keydown', e => {
@@ -851,7 +847,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!day || e.key !== 'Enter') return;
             anchor = day.dataset.date;
             if (e.shiftKey && selection.from) selection.set(selection.from, anchor); else selection.set(anchor, anchor);
-            revealList();
         });
 
         prevMonthBtn.addEventListener('click', () => { middleDate.setMonth(middleDate.getMonth() - 1); renderCalendars(); });
@@ -865,8 +860,8 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 allShows = data;
                 if (isSubpage && document.querySelector('#all-events-section')) {
-                    const revealList = initAllEvents();
-                    initCalendar(revealList);
+                    initAllEvents();
+                    initCalendar();
                 } else {
                     renderHomeEvents();
                 }

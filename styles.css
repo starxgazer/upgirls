@@ -1627,3 +1627,143 @@ header .container {
 .date-filter-hint:empty {
     display: none;
 }
+
+/* =========================================================
+   Events page: calendar on the left, list on the right
+   ========================================================= */
+
+.events-page {
+    padding-top: 2rem;
+}
+
+.events-page .section-title {
+    margin-top: 0;
+    text-align: center;
+    border-bottom: none;
+    margin-bottom: 0.5rem;
+}
+
+.events-page .section-subtitle {
+    margin-bottom: 2rem;
+}
+
+.events-layout {
+    display: grid;
+    grid-template-columns: 360px minmax(0, 1fr);
+    gap: 2rem;
+    align-items: start;
+}
+
+.events-calendar {
+    position: sticky;
+    top: 110px;
+}
+
+.events-calendar .calendar-wrapper {
+    margin: 0;
+}
+
+.calendar-header h3 {
+    border-bottom: none;
+    margin: 0;
+    padding: 0;
+}
+
+.events-calendar .multi-calendar-view {
+    display: block;
+    padding: 0.5rem 1rem 1rem;
+    overflow: visible;
+}
+
+.events-calendar .calendar-grid {
+    min-width: 0;
+}
+
+.calendar-hint {
+    font-size: 0.8rem;
+    color: #888;
+    text-align: center;
+    margin: 0.8rem 0.5rem;
+}
+
+.events-calendar .date-filter {
+    flex-direction: column;
+    gap: 0.4rem;
+    margin: 0.8rem 0 0;
+    padding: 0.8rem 1rem;
+    border-radius: 16px;
+    text-align: center;
+}
+
+.date-filter-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.see-events {
+    display: none;
+}
+
+.events-main .controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.8rem;
+    padding: 1rem;
+    margin: 0 0 1rem;
+}
+
+.events-main .search-box {
+    flex: none;
+}
+
+.events-main .filter-sort-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    flex: none;
+}
+
+.events-main .filter-sort-box select {
+    min-width: 0;
+}
+
+.events-main .shows-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.events-main .events-count {
+    text-align: left;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 992px) {
+    .events-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .events-calendar {
+        position: static;
+        max-width: 420px;
+        margin: 0 auto;
+    }
+
+    .see-events {
+        display: inline-block;
+    }
+}
+
+.events-calendar .month-grid-header {
+    display: none;
+}
+
+#all-events-section {
+    padding-top: 0.5rem;
+}
+
+/* Keep the selection ring visible on days that already have events (also past ones) */
+.calendar-day.has-event.past-event.selected,
+.calendar-day.has-event.selected {
+    box-shadow: 0 0 0 3px var(--primary-pink);
+}

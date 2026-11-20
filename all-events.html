@@ -38,60 +38,63 @@
         </div>
     </header>
 
-    <main class="container page-content">
-        <div class="back-link">
-            <a href="index.html#shows">&larr; Back to Events</a>
-        </div>
-
+    <main class="container page-content events-page">
         <section id="all-events-section">
-            <h2 class="section-title">Event Calendar</h2>
-            <p class="section-subtitle">Check our schedule for upcoming and past events. Click a date to see its events, then click another date (or drag across dates) to see a range. Click the same date, press Esc, or use Clear to cancel.</p>
-            
-            <div id="calendar-container" class="calendar-wrapper">
-                <div class="calendar-header">
-                    <button id="prev-month">&larr;</button>
-                    <h3 id="current-month-year">Month Year</h3>
-                    <button id="next-month">&rarr;</button>
-                </div>
-                <div id="multi-calendar-view" class="multi-calendar-view">
-                    <!-- Calendars will be loaded here via JS -->
-                </div>
-            </div>
+            <h2 class="section-title">Events</h2>
+            <p class="section-subtitle">Every UPgirls show, meet up, and Q-Time. Pick a date on the calendar to filter.</p>
 
-            <h2 class="section-title" style="margin-top: 4rem;">All Events List</h2>
-            <p class="section-subtitle">A complete history of UPgirls performances and upcoming shows.</p>
-            
-            <div class="controls" style="margin-bottom: 1rem;">
-                <div class="search-box">
-                    <input type="text" id="event-search" placeholder="Search events by name, type, or location..." aria-label="Search events">
-                </div>
-                <div class="filter-sort-box">
-                    <select id="event-year-filter" aria-label="Filter by year"></select>
-                    <select id="event-month-filter" aria-label="Filter by month"></select>
-                    <select id="event-status-filter" aria-label="Filter by status">
-                        <option value="all">All Status</option>
-                        <option value="upcoming">Upcoming</option>
-                        <option value="finished">Finished</option>
-                    </select>
-                    <select id="event-type-filter" aria-label="Filter by type">
-                        <option value="all">All Events</option>
-                        <option value="audition">🎤 Auditions</option>
-                        <option value="performance">🎭 Shows</option>
-                    </select>
-                </div>
-            </div>
-            <div id="date-filter" class="date-filter" style="display: none;">
-                <span id="date-filter-text"></span>
-                <small id="date-filter-hint" class="date-filter-hint"></small>
-                <button type="button" id="date-filter-clear">✕ Clear</button>
-            </div>
-            <p id="events-count" class="events-count" aria-live="polite"></p>
+            <div class="events-layout">
+                <aside class="events-calendar">
+                    <div id="calendar-container" class="calendar-wrapper">
+                        <div class="calendar-header">
+                            <button id="prev-month" aria-label="Previous month">&larr;</button>
+                            <h3 id="current-month-year">Month Year</h3>
+                            <button id="next-month" aria-label="Next month">&rarr;</button>
+                        </div>
+                        <div id="multi-calendar-view" class="multi-calendar-view">
+                            <!-- Calendar is loaded here via JS -->
+                        </div>
+                    </div>
+                    <p class="calendar-hint">Tap a date, then another date for a range. Tap the same date or press Esc to cancel.</p>
+                    <div id="date-filter" class="date-filter" style="display: none;">
+                        <span id="date-filter-text"></span>
+                        <small id="date-filter-hint" class="date-filter-hint"></small>
+                        <div class="date-filter-actions">
+                            <button type="button" id="date-filter-see" class="see-events">See events ↓</button>
+                            <button type="button" id="date-filter-clear">✕ Clear</button>
+                        </div>
+                    </div>
+                </aside>
 
-            <div id="shows-list" class="shows-grid">
-                <!-- Shows will be loaded here via JS -->
-            </div>
-            <div class="shows-view-all">
-                <button type="button" id="events-load-more" class="view-all-link" style="display: none;">Load More</button>
+                <div class="events-main">
+                    <div class="controls">
+                        <div class="search-box">
+                            <input type="text" id="event-search" placeholder="Search name, type, or location..." aria-label="Search events">
+                        </div>
+                        <div class="filter-sort-box">
+                            <select id="event-year-filter" aria-label="Filter by year"></select>
+                            <select id="event-month-filter" aria-label="Filter by month"></select>
+                            <select id="event-status-filter" aria-label="Filter by status">
+                                <option value="all">All Status</option>
+                                <option value="upcoming">Upcoming</option>
+                                <option value="finished">Finished</option>
+                            </select>
+                            <select id="event-type-filter" aria-label="Filter by type">
+                                <option value="all">All Events</option>
+                                <option value="audition">🎤 Auditions</option>
+                                <option value="performance">🎭 Shows</option>
+                            </select>
+                        </div>
+                    </div>
+                    <p id="events-count" class="events-count" aria-live="polite"></p>
+
+                    <div id="shows-list" class="shows-grid">
+                        <!-- Shows will be loaded here via JS -->
+                    </div>
+                    <div class="shows-view-all">
+                        <button type="button" id="events-load-more" class="view-all-link" style="display: none;">Load More</button>
+                    </div>
+                </div>
             </div>
         </section>
     </main>

@@ -311,7 +311,8 @@ function initThemeToggle() {
         sync();
     });
     sync();
-    header.appendChild(btn);
+    // Sits in the logo row so it stays vertically centered with the logo as it shrinks on scroll.
+    (header.querySelector('.logo-container') || header).appendChild(btn);
 }
 
 /* ---------- Tweets ---------- */

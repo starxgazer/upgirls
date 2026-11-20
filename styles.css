@@ -1404,14 +1404,15 @@ footer a {
 }
 
 /* Theme toggle */
-header .container {
+.logo-container {
     position: relative;
 }
 
 .theme-toggle {
     position: absolute;
-    top: 0;
-    right: 2rem;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
     background: transparent;
     border: 2px solid var(--primary-color);
     border-radius: 50%;
@@ -1424,13 +1425,12 @@ header .container {
 }
 
 .theme-toggle:hover {
-    transform: scale(1.1);
+    transform: translateY(-50%) scale(1.1);
     background: rgba(255, 183, 197, 0.25);
 }
 
 @media (max-width: 768px) {
     .theme-toggle {
-        right: 1rem;
         width: 34px;
         height: 34px;
         font-size: 0.95rem;
@@ -1766,4 +1766,22 @@ header .container {
 .calendar-day.has-event.past-event.selected,
 .calendar-day.has-event.selected {
     box-shadow: 0 0 0 3px var(--primary-pink);
+}
+
+/* Selected day: solid deep pink, clearly different from upcoming (light pink) and past (gray) event days */
+.calendar-day.selected,
+.calendar-day.selected:not(.has-event),
+.calendar-day.has-event.selected,
+.calendar-day.has-event.past-event.selected,
+[data-theme="dark"] .calendar-day.has-event.past-event.selected {
+    background: #d81b7a;
+    color: #fff;
+    opacity: 1;
+    filter: none;
+    box-shadow: 0 0 0 3px rgba(216, 27, 122, 0.35);
+}
+
+.calendar-day.selected .event-dot,
+.calendar-day.past-event.selected .event-dot {
+    background: #fff;
 }

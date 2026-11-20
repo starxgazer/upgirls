@@ -45,7 +45,7 @@
 
         <section id="all-events-section">
             <h2 class="section-title">Event Calendar</h2>
-            <p class="section-subtitle">Check our schedule for upcoming and past events.</p>
+            <p class="section-subtitle">Check our schedule for upcoming and past events. Click a date to see its events, then click another date (or drag across dates) to see a range. Click the same date, press Esc, or use Clear to cancel.</p>
             
             <div id="calendar-container" class="calendar-wrapper">
                 <div class="calendar-header">
@@ -79,6 +79,11 @@
                         <option value="performance">🎭 Shows</option>
                     </select>
                 </div>
+            </div>
+            <div id="date-filter" class="date-filter" style="display: none;">
+                <span id="date-filter-text"></span>
+                <small id="date-filter-hint" class="date-filter-hint"></small>
+                <button type="button" id="date-filter-clear">✕ Clear</button>
             </div>
             <p id="events-count" class="events-count" aria-live="polite"></p>
 

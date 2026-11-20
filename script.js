@@ -575,6 +575,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ----- Events ----- */
 
+    // Date (or date range) picked on the calendar. Listeners repaint the calendar and re-render the list.
+    const selection = {
+        from: null,
+        to: null,
+        listeners: [],
+        set(from, to) {
+            this.from = from;
+            this.to = to || from;
+            if (this.from && this.from > this.to) [this.from, this.to] = [this.to, this.from];
+            this.listeners.forEach(fn => fn());
+        },
+        clear() { this.set(null, null); }
+    };
+
+    const formatDay = s => new Date(s + 'T12:00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+
     function renderHomeEvents() {
         const note = $('shows-note');
         const nextEl = $('next-event');
@@ -620,7 +636,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const term = q ? q.value.trim().toLowerCase() : '';
             const now = new Date();
             return allShows.filter(s => {
-                if (term && !`${s.name} ${s.type} ${s.location || ''} ${s.description || ''}`.toLowerCase().includes(term)) return false;
+                if (selection.from && (isTBA(s) || s.date < selection.from || s.date > selection.to)) return false;
+                if (term &&!`${s.name} ${s.type} ${s.location || ''} ${s.description || ''}`.toLowerCase().includes(term)) return false;
                 if (yearSel && yearSel.value !== 'all' && s.date.slice(0, 4) !== yearSel.value) return false;
                 if (monthSel && monthSel.value !== 'all' && s.date.slice(5, 7) !== monthSel.value) return false;
                 if (typeSel && typeSel.value !== 'all' && (s.event_type || 'performance') !== typeSel.value) return false;
@@ -633,41 +650,61 @@ document.addEventListener('DOMContentLoaded', () => {
             }).sort(byDateDesc);
         }
 
+        const chip = $('date-filter');
+        const chipText = $('date-filter-text');
+        const chipClear = $('date-filter-clear');
+
         function render() {
             const list = filtered();
+            const picked = !!selection.from;
+            if (chip) {
+                chip.style.display = picked ? 'flex' : 'none';
+                if (picked) {
+                    const single = selection.from === selection.to;
+                    chipText.textContent = single
+                        ? `Events on ${formatDay(selection.from)}`
+                        : `Events from ${formatDay(selection.from)} to ${formatDay(selection.to)}`;
+                    const hint = $('date-filter-hint');
+                    if (hint) hint.textContent = single ? 'Pick another date for a range' : '';
+                }
+            }
             renderShowCards(showsList, list.slice(0, visible));
             if (countEl) countEl.textContent = list.length ? `Showing ${Math.min(visible, list.length)} of ${list.length} events` : '';
             if (moreBtn) moreBtn.style.display = list.length > visible ? 'inline-block' : 'none';
-            if (!list.length) showsList.innerHTML = '<p class="no-results">No events match your filters.</p>';
-        }
-
-        [q, yearSel, monthSel, typeSel, statusSel].forEach(el => {
-            if (el) el.addEventListener(el === q ? 'input' : 'change', () => { visible = PAGE_SIZE; render(); });
-        });
-        if (moreBtn) moreBtn.addEventListener('click', () => { visible += PAGE_SIZE; render(); });
-
-        // Clicking a day in the calendar narrows the list to that month and highlights the card.
-        function focusDate(dateString) {
-            if (q) q.value = '';
-            if (typeSel) typeSel.value = 'all';
-            if (statusSel) statusSel.value = 'all';
-            if (yearSel) yearSel.value = dateString.slice(0, 4);
-            if (monthSel) monthSel.value = dateString.slice(5, 7);
-            visible = PAGE_SIZE;
-            render();
-            const card = showsList.querySelector(`.show-card[data-date="${dateString}"]`);
-            if (card) {
-                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                card.classList.add('highlight');
-                setTimeout(() => card.classList.remove('highlight'), 2000);
+            if (!list.length) {
+                showsList.innerHTML = `<p class="no-results">${picked ? 'No events on the selected date(s).' : 'No events match your filters.'}</p>`;
             }
         }
 
+        // Search, year and month conflict with a calendar pick, so changing them clears it.
+        [q, yearSel, monthSel].forEach(el => {
+            if (el) el.addEventListener(el === q ? 'input' : 'change', () => {
+                visible = PAGE_SIZE;
+                if (selection.from) selection.clear(); else render();
+            });
+        });
+        [typeSel, statusSel].forEach(el => {
+            if (el) el.addEventListener('change', () => { visible = PAGE_SIZE; render(); });
+        });
+        if (moreBtn) moreBtn.addEventListener('click', () => { visible += PAGE_SIZE; render(); });
+        if (chipClear) chipClear.addEventListener('click', () => selection.clear());
+
+        // A calendar pick shows only that date (or range), regardless of the other filters.
+        selection.listeners.push(() => {
+            if (selection.from) {
+                if (q) q.value = '';
+                if (yearSel) yearSel.value = 'all';
+                if (monthSel) monthSel.value = 'all';
+            }
+            visible = PAGE_SIZE;
+            render();
+        });
+
         render();
-        return focusDate;
+        return () => { if (chip && selection.from) chip.scrollIntoView({ behavior: 'smooth', block: 'center' }); };
     }
 
-    function initCalendar(focusDate) {
+    function initCalendar(revealList) {
         const calendarContainer = $('multi-calendar-view');
         const monthYearDisplay = $('current-month-year');
         const prevMonthBtn = $('prev-month');
@@ -717,6 +754,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
                 const dayEvents = allShows.filter(s => s.date === dateString);
 
+                dayDiv.dataset.date = dateString;
+                dayDiv.tabIndex = 0;
+                dayDiv.setAttribute('role', 'button');
+
                 if (dayEvents.length > 0) {
                     dayDiv.classList.add('has-event');
                     if (new Date(dateString + 'T00:00:00') < todayStart) dayDiv.classList.add('past-event');
@@ -724,11 +765,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     dot.className = 'event-dot';
                     dayDiv.appendChild(dot);
                     dayDiv.title = dayEvents.map(e => e.name).join(', ');
-                    dayDiv.tabIndex = 0;
-                    dayDiv.setAttribute('role', 'button');
-                    const go = () => focusDate && focusDate(dateString);
-                    dayDiv.addEventListener('click', go);
-                    dayDiv.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
                 }
 
                 if (year === today.getFullYear() && month === today.getMonth() && i === today.getDate()) {
@@ -749,7 +785,74 @@ document.addEventListener('DOMContentLoaded', () => {
                 calendarContainer.appendChild(grid);
             });
             monthYearDisplay.textContent = monthFmt.format(middleDate);
+            paintSelection();
         }
+
+        // Mark the picked day(s): ends get "selected", everything between gets "in-range".
+        function paintSelection() {
+            calendarContainer.querySelectorAll('.calendar-day[data-date]').forEach(el => {
+                const d = el.dataset.date;
+                const inside = !!selection.from && d >= selection.from && d <= selection.to;
+                el.classList.toggle('in-range', inside);
+                el.classList.toggle('selected', inside && (d === selection.from || d === selection.to));
+                el.setAttribute('aria-pressed', inside ? 'true' : 'false');
+            });
+        }
+        selection.listeners.push(paintSelection);
+
+        // Click a day for that date; drag (or Shift+click) across days for a range; click the same day again to clear.
+        let anchor = null;
+        let dragging = false;
+        let dragged = false;
+        const dayOf = e => e.target.closest('.calendar-day[data-date]');
+
+        calendarContainer.addEventListener('mousedown', e => {
+            const day = dayOf(e);
+            if (!day || e.button !== 0) return;
+            e.preventDefault();
+            if (e.shiftKey && anchor) {
+                selection.set(anchor, day.dataset.date);
+                revealList();
+                return;
+            }
+            anchor = day.dataset.date;
+            dragging = true;
+            dragged = false;
+        });
+        calendarContainer.addEventListener('mouseover', e => {
+            const day = dayOf(e);
+            if (!dragging || !day) return;
+            if (day.dataset.date !== anchor) dragged = true;
+            if (dragged) selection.set(anchor, day.dataset.date);
+        });
+        document.addEventListener('mouseup', () => {
+            if (!dragging) return;
+            dragging = false;
+            if (dragged) {
+                revealList();
+                return;
+            }
+            const single = selection.from && selection.from === selection.to;
+            if (single && selection.from === anchor) {
+                selection.clear();                      // same day again: cancel
+            } else if (single) {
+                selection.set(selection.from, anchor);  // second day: make a range
+                revealList();
+            } else {
+                selection.set(anchor, anchor);          // none or a range: start over
+                revealList();
+            }
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && selection.from) selection.clear();
+        });
+        calendarContainer.addEventListener('keydown', e => {
+            const day = dayOf(e);
+            if (!day || e.key !== 'Enter') return;
+            anchor = day.dataset.date;
+            if (e.shiftKey && selection.from) selection.set(selection.from, anchor); else selection.set(anchor, anchor);
+            revealList();
+        });
 
         prevMonthBtn.addEventListener('click', () => { middleDate.setMonth(middleDate.getMonth() - 1); renderCalendars(); });
         nextMonthBtn.addEventListener('click', () => { middleDate.setMonth(middleDate.getMonth() + 1); renderCalendars(); });
@@ -762,8 +865,8 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 allShows = data;
                 if (isSubpage && document.querySelector('#all-events-section')) {
-                    const focusDate = initAllEvents();
-                    initCalendar(focusDate);
+                    const revealList = initAllEvents();
+                    initCalendar(revealList);
                 } else {
                     renderHomeEvents();
                 }

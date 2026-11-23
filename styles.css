@@ -784,6 +784,10 @@ footer a {
     --brand-solid: #d60000;
 }
 
+.streaming-btn[hidden] {
+    display: none;
+}
+
 .streaming-btn:hover {
     background: var(--brand-solid);
     border-color: var(--brand-solid);

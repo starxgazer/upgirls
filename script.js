@@ -91,7 +91,7 @@ function songLinksHTML(song, variant) {
             : `<svg viewBox="0 0 24 24" fill="currentColor"><path d="${s.path}"/></svg>`;
         const href = esc(safeUrl(song[s.field]));
         if (variant === 'button') {
-            return `<a href="${href}" target="_blank" rel="noopener" class="streaming-btn ${s.cls}">${svg}${s.label}</a>`;
+            return `<a href="${href}" target="_blank" rel="noopener" class="streaming-btn ${s.cls}" data-field="${s.field}">${svg}${s.label}</a>`;
         }
         return `<a href="${href}" target="_blank" rel="noopener" title="${s.label}" class="song-icon ${s.cls}">${svg}</a>`;
     }).join('');
@@ -128,17 +128,17 @@ function playerOptions(song) {
 
     const spotify = spotifyTrackId(song.spotify);
     if (spotify) {
-        options.push({ tab: 'Spotify', label: 'Play on Spotify', cls: 'spotify', video: false,
+        options.push({ field: 'spotify', tab: 'Spotify', label: 'Play on Spotify', cls: 'spotify', video: false,
             src: `https://open.spotify.com/embed/track/${spotify}?utm_source=generator`, title: `${song.title} on Spotify` });
     }
     const video = youtubeId(song.youtube_video);
     if (video) {
-        options.push({ tab: 'Music Video', label: 'Play video', cls: 'youtube', video: true,
+        options.push({ field: 'youtube_video', tab: 'Music Video', label: 'Play video', cls: 'youtube', video: true,
             src: youtubeSrc(video), title: `${song.title} music video` });
     }
     const music = youtubeId(song.youtube_music);
     if (music && music !== video) {
-        options.push({ tab: 'YouTube Music', label: 'Play on YouTube Music', cls: 'youtube', video: true,
+        options.push({ field: 'youtube_music', tab: 'YouTube Music', label: 'Play on YouTube Music', cls: 'youtube', video: true,
             src: youtubeSrc(music), title: `${song.title} on YouTube Music` });
     }
     return options;
@@ -159,7 +159,15 @@ function renderSongPlayer(song) {
     const stage = document.createElement('div');
     stage.className = 'player-stage';
 
+    // The "Open in" link follows the active tab. Links that have no player tab always stay visible.
+    const links = [...document.querySelectorAll('#streaming-links a[data-field]')];
+    const withTab = new Set(options.map(o => o.field));
+    function syncLinks(option) {
+        links.forEach(a => { a.hidden = withTab.has(a.dataset.field) && a.dataset.field !== option.field; });
+    }
+
     function showFacade(option) {
+        syncLinks(option);
         stage.innerHTML = '';
         const facade = document.createElement('button');
         facade.type = 'button';

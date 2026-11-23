@@ -62,6 +62,14 @@ function setPageMeta(title, description) {
         setMeta('og:description', description, 'property');
     }
     setMeta('og:url', window.location.href, 'property');
+    // Every member/song page shares one HTML file, so point the canonical URL at this specific page.
+    let canon = document.head.querySelector('link[rel="canonical"]');
+    if (!canon) {
+        canon = document.createElement('link');
+        canon.rel = 'canonical';
+        document.head.appendChild(canon);
+    }
+    canon.href = window.location.href;
 }
 
 const SVG_PATHS = {

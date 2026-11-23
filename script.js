@@ -381,7 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function highlightNav() {
         let currentSectionId = '';
-        const scrollPos = window.scrollY + 150;
+        const scrollPos = window.scrollY + 200; // trigger line below the fixed header (full-size header is ~170px)
         const currentPath = window.location.pathname;
 
         sections.forEach(section => {
@@ -389,6 +389,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentSectionId = section.getAttribute('id');
             }
         });
+
+        // The last section (Social) is shorter than the screen, so its top can never reach the
+        // trigger line. When the page is scrolled to the very bottom, treat the last section as current.
+        const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+        if (!isSubpage && atBottom && sections.length) {
+            currentSectionId = sections[sections.length - 1].getAttribute('id');
+        }
 
         navLinks.forEach(link => {
             link.classList.remove('active');

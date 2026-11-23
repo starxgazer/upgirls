@@ -39,8 +39,9 @@ After changing CSS or JS, hard-refresh (`Ctrl+Shift+R`); browsers cache them agg
 ## Code conventions
 
 - All rendering of data files goes through `esc()` / `safeUrl()` in `script.js`. Never put raw JSON values into `innerHTML`.
+- Song players on `song.html` are built from the `spotify`, `youtube_music`, and `youtube_video` link fields (ids are validated in `script.js`). Add normal share links to `discography.json`, never embed URLs. Iframes are created only after a click.
 - Keep the nav, footer, and `<head>` meta the same across the five HTML pages when you change one.
-- The home header is `position: fixed` with its full-size height reserved on `<body>` by `reserveHeaderSpace()`. Do not make it change layout height again, or it will flicker near the top.
+- The header is `position: fixed` on every page. Its size is scroll-linked through the `--hp` CSS variable (0..1, set by `updateHeader()` in `script.js`), and its full height is reserved on `<body>` (`--header-full`). Do not switch it back to a class toggle or let it change the page layout height, or it will flicker.
 - Dark mode is `html[data-theme="dark"]` with overrides at the end of `styles.css`. When adding a component with hard-coded colors, add a dark override.
 
 ## Git

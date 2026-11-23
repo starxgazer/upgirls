@@ -16,7 +16,7 @@ Plain static site: HTML, CSS, and vanilla JavaScript. No build step, no dependen
 - Event list with a live countdown to the next event, plus per-event **Add to Calendar** (`.ics`)
 - Event archive with search, year/month/status/type filters, and a clickable calendar
 - Latest posts from the group's X account
-- Member profiles, discography with lyrics, dark mode (follows the system, toggle in the header)
+- Member profiles, discography with lyrics, and a click-to-load Spotify / YouTube player on each song page, dark mode (follows the system, toggle in the header)
 
 ## Structure
 

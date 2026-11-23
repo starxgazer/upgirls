@@ -97,6 +97,119 @@ function songLinksHTML(song, variant) {
     }).join('');
 }
 
+/* ---------- Song player (click-to-load iframes) ---------- */
+
+// Players are derived from the existing link fields. Ids are validated with strict patterns so
+// nothing unexpected from the data files ends up in an iframe URL.
+function parseUrl(u) {
+    try { return new URL(u); } catch (e) { return null; }
+}
+
+function spotifyTrackId(url) {
+    const u = parseUrl(url);
+    if (!u || u.hostname !== 'open.spotify.com') return null;
+    const m = u.pathname.match(/\/track\/([A-Za-z0-9]{22})(?:\/|$)/);
+    return m ? m[1] : null;
+}
+
+function youtubeId(url) {
+    const u = parseUrl(url);
+    if (!u) return null;
+    const host = u.hostname.replace(/^www\./, '');
+    let id = null;
+    if (host === 'youtu.be') id = u.pathname.slice(1).split('/')[0];
+    else if (host === 'youtube.com' || host === 'music.youtube.com') id = u.searchParams.get('v');
+    return /^[A-Za-z0-9_-]{11}$/.test(id || '') ? id : null;
+}
+
+function playerOptions(song) {
+    const options = [];
+    const youtubeSrc = id => `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1`;
+
+    const spotify = spotifyTrackId(song.spotify);
+    if (spotify) {
+        options.push({ tab: 'Spotify', label: 'Play on Spotify', cls: 'spotify', video: false,
+            src: `https://open.spotify.com/embed/track/${spotify}?utm_source=generator`, title: `${song.title} on Spotify` });
+    }
+    const video = youtubeId(song.youtube_video);
+    if (video) {
+        options.push({ tab: 'Music Video', label: 'Play video', cls: 'youtube', video: true,
+            src: youtubeSrc(video), title: `${song.title} music video` });
+    }
+    const music = youtubeId(song.youtube_music);
+    if (music && music !== video) {
+        options.push({ tab: 'YouTube Music', label: 'Play on YouTube Music', cls: 'youtube', video: true,
+            src: youtubeSrc(music), title: `${song.title} on YouTube Music` });
+    }
+    return options;
+}
+
+// Shows a "Play" box per option; the iframe is only created after the visitor clicks it, so no
+// third-party request or cookie happens before that. The streaming buttons below stay as a fallback.
+function renderSongPlayer(song) {
+    const host = document.getElementById('song-player');
+    if (!host) return;
+    host.innerHTML = '';
+    const options = playerOptions(song);
+    if (!options.length) {
+        host.style.display = 'none';
+        return;
+    }
+
+    const stage = document.createElement('div');
+    stage.className = 'player-stage';
+
+    function showFacade(option) {
+        stage.innerHTML = '';
+        const facade = document.createElement('button');
+        facade.type = 'button';
+        facade.className = `player-facade ${option.cls}${option.video ? ' is-video' : ''}`;
+        const play = document.createElement('span');
+        play.className = 'player-play';
+        play.setAttribute('aria-hidden', 'true');
+        play.textContent = '▶';
+        const label = document.createElement('span');
+        label.className = 'player-label';
+        label.textContent = option.label;
+        facade.append(play, label);
+        facade.addEventListener('click', () => {
+            const frame = document.createElement('iframe');
+            frame.src = option.src;
+            frame.title = option.title;
+            frame.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+            frame.referrerPolicy = 'strict-origin-when-cross-origin';
+            frame.allowFullscreen = option.video;
+            frame.className = `player-frame${option.video ? ' is-video' : ''}`;
+            stage.innerHTML = '';
+            stage.appendChild(frame);
+        });
+        stage.appendChild(facade);
+    }
+
+    if (options.length > 1) {
+        const tabs = document.createElement('div');
+        tabs.className = 'player-tabs';
+        tabs.setAttribute('role', 'tablist');
+        options.forEach((option, i) => {
+            const tab = document.createElement('button');
+            tab.type = 'button';
+            tab.className = 'player-tab';
+            tab.setAttribute('role', 'tab');
+            tab.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+            tab.textContent = option.tab;
+            tab.addEventListener('click', () => {
+                tabs.querySelectorAll('.player-tab').forEach(t => t.setAttribute('aria-selected', t === tab ? 'true' : 'false'));
+                showFacade(option);
+            });
+            tabs.appendChild(tab);
+        });
+        host.appendChild(tabs);
+    }
+
+    host.appendChild(stage);
+    showFacade(options[0]);
+}
+
 function songRowElement(song, index, showYear) {
     const row = document.createElement('div');
     row.className = 'song-row clickable';
@@ -965,6 +1078,7 @@ function loadSongDetail(id) {
 
             const streamingContainer = document.getElementById('streaming-links');
             streamingContainer.innerHTML = songLinksHTML(song, 'button');
+            renderSongPlayer(song);
             if (!streamingContainer.innerHTML) {
                 const section = document.querySelector('.song-links');
                 if (section) section.style.display = 'none';

@@ -22,29 +22,25 @@ body {
     padding: 0 2rem;
 }
 
+/* The header is fixed and its size follows the scroll position: script.js sets --hp (0 at the top,
+   1 once fully collapsed) and every size below is derived from it, so it shrinks exactly as fast as
+   the page scrolls. No transitions on purpose. Space for the full-size header is reserved on <body>. */
 header {
+    --hp: 0;
     background: var(--light-color);
-    padding: 1rem 0;
+    padding: calc(1rem - 0.5rem * var(--hp)) 0;
     border-bottom: 2px solid var(--primary-color);
-    position: sticky;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, calc(0.1 * var(--hp)));
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 100;
-    transition: all 0.3s ease;
-}
-
-header.scrolled {
-    padding: 0.5rem 0;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 header .header-logo {
-    height: 100px;
+    height: calc(100px - 50px * var(--hp));
     width: auto;
-    transition: all 0.3s ease;
-}
-
-header.scrolled .header-logo {
-    height: 50px;
 }
 
 .logo-container {
@@ -55,14 +51,9 @@ header.scrolled .header-logo {
 
 header h1 {
     font-family: 'Playfair Display', serif;
-    font-size: 2.5rem;
+    font-size: calc(2.5rem - 0.7rem * var(--hp));
     margin: 0;
     text-align: center;
-    transition: all 0.3s ease;
-}
-
-header.scrolled h1 {
-    font-size: 1.8rem;
 }
 
 header h1 a {
@@ -181,7 +172,7 @@ h3 {
 }
 
 .page-content {
-    padding-top: 120px;
+    padding-top: 2rem;
     padding-bottom: 4rem;
     min-height: 70vh;
 }
@@ -612,11 +603,7 @@ footer a {
 
 @media (max-width: 768px) {
     header .header-logo {
-        height: 70px;
-    }
-    
-    header.scrolled .header-logo {
-        height: 40px;
+        height: calc(70px - 30px * var(--hp));
     }
 
     header nav ul {
@@ -1656,7 +1643,7 @@ footer a {
 
 .events-calendar {
     position: sticky;
-    top: 110px;
+    top: calc(var(--header-min, 102px) + 12px);
 }
 
 .events-calendar .calendar-wrapper {
@@ -1786,14 +1773,11 @@ footer a {
     background: #fff;
 }
 
-/* Home page: fixed header (space is reserved in script.js) so its shrinking never shifts the page */
-body:not(.subpage) header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+/* Clearance for the fixed header. JS measures the real values; these are fallbacks for the first paint. */
+body {
+    padding-top: var(--header-full, 168px);
 }
 
 html {
-    scroll-padding-top: 90px;
+    scroll-padding-top: calc(var(--header-min, 102px) + 16px);
 }

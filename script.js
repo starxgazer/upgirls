@@ -419,31 +419,43 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // On the home page the header is fixed and shrinks while scrolling. Reserve its full-size height
-    // up front so shrinking never moves the content (which used to make the header flicker near the top).
-    function reserveHeaderSpace() {
-        if (!header || isSubpage) return;
-        const wasScrolled = header.classList.contains('scrolled');
-        header.style.transition = 'none';
-        header.classList.remove('scrolled');
-        document.body.style.paddingTop = header.offsetHeight + 'px';
-        header.classList.toggle('scrolled', wasScrolled);
-        header.offsetHeight; // apply the state change before transitions come back
-        header.style.transition = '';
+    // The header is fixed and its size follows the scroll position (see the header rules in styles.css).
+    // --hp goes 0 -> 1 over `range` pixels of scrolling, where `range` is exactly how many pixels the header
+    // loses. So the header's bottom edge stays glued to the top of the content while it shrinks, and the
+    // size always matches the scroll speed, forwards and backwards. Full-size space is reserved on <body>
+    // (--header-full), so changing the header never moves the content.
+    const headerState = { range: 1, progress: -1 };
+
+    function updateHeader() {
+        const p = Math.min(1, Math.max(0, window.scrollY / headerState.range));
+        if (p !== headerState.progress) {
+            headerState.progress = p;
+            header.style.setProperty('--hp', p);
+        }
+    }
+
+    function measureHeader() {
+        const root = document.documentElement;
+        header.style.setProperty('--hp', 0);
+        const full = header.offsetHeight;
+        header.style.setProperty('--hp', 1);
+        const min = header.offsetHeight;
+        root.style.setProperty('--header-full', full + 'px');
+        root.style.setProperty('--header-min', min + 'px');
+        headerState.range = Math.max(1, full - min);
+        headerState.progress = -1;
+        updateHeader();
     }
 
     if (header) {
-        reserveHeaderSpace();
-        window.addEventListener('resize', reserveHeaderSpace);
-        window.addEventListener('load', reserveHeaderSpace);
-        // Only the home page header shrinks while scrolling. Subpages keep the small header at all times,
-        // otherwise it grows back to full size near the top and the content jumps.
-        const syncHeaderSize = () => header.classList.toggle('scrolled', isSubpage || window.scrollY > 50);
+        measureHeader();
+        window.addEventListener('resize', measureHeader);
+        window.addEventListener('load', measureHeader);
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(measureHeader);
         window.addEventListener('scroll', () => {
-            syncHeaderSize();
+            updateHeader();
             highlightNav();
         }, { passive: true });
-        syncHeaderSize();
         highlightNav();
     }
 

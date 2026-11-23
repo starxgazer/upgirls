@@ -436,11 +436,14 @@ document.addEventListener('DOMContentLoaded', () => {
         reserveHeaderSpace();
         window.addEventListener('resize', reserveHeaderSpace);
         window.addEventListener('load', reserveHeaderSpace);
+        // Only the home page header shrinks while scrolling. Subpages keep the small header at all times,
+        // otherwise it grows back to full size near the top and the content jumps.
+        const syncHeaderSize = () => header.classList.toggle('scrolled', isSubpage || window.scrollY > 50);
         window.addEventListener('scroll', () => {
-            header.classList.toggle('scrolled', window.scrollY > 50);
+            syncHeaderSize();
             highlightNav();
         }, { passive: true });
-        header.classList.toggle('scrolled', window.scrollY > 50);
+        syncHeaderSize();
         highlightNav();
     }
 

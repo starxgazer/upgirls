@@ -18,12 +18,13 @@ This is the most common task. Events come from the group's X account (`@theupgir
 - Tweet links are shortened (`t.co`) and truncated in the page text. Resolve them with `curl -s -o /dev/null -w '%{redirect_url}' https://t.co/XXXX` to get the full `forms.gle` URL.
 - Many Google Forms need a login, so their descriptions cannot be read. Use the poster instead.
 - One entry per event day. A multi-day Q-Time is one entry on its first day, with the range in `description`.
+- Use `tools/add_event.py` to add an entry (auto id, weekday check, t.co resolving, duplicate check, newest-first order). Run it with `--help`; use `--dry-run` to preview. You still read the poster yourself.
 - Tweets go in `x_tweets_updated.json` (newest first, real `https://x.com/theupgirls/status/<id>` URLs).
 
 ## Checks before committing
 
 ```bash
-python3 -c "import json;json.load(open('shows.json',encoding='utf-8'))"   # data files must stay valid JSON
+python3 tools/check_data.py        # JSON valid, unique ids, dates, images, sitemap, nav/footer in sync
 node --check script.js
 python3 generate_sitemap.py        # only after adding members or songs
 ```

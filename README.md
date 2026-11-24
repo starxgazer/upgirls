@@ -47,6 +47,16 @@ Notes:
 - `time` is read as WIB (UTC+7). Use `HH:MM`, or `HH:MM-HH:MM` for a range, so the countdown and `.ics` file get the right time.
 - Run `python3 generate_sitemap.py` after adding members or songs.
 
+## Tools
+
+Small Python scripts (standard library only) in `tools/`:
+
+```bash
+python3 tools/add_event.py --date 2026-12-06 --name "Minishow" --type "Minishow" \
+    --time "15:00 WIB" --location "Ice Palace 4F" --link https://t.co/XXXX   # add --dry-run to preview
+python3 tools/check_data.py   # run before committing
+```
+
 ## Run locally
 
 The site uses `fetch`, so it cannot be opened via `file://`. Serve it instead:
